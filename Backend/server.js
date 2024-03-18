@@ -22,6 +22,8 @@ app.use(express.json()) ///for middleware lesson
 
 
 app.use(cookieParser())
+app.use(errorHandler)
+app.use(express.static(path.join(__dirname,("../Frontend/my-app/build"))));
 
 app.use(errorHandler)
 
