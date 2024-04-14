@@ -5,7 +5,6 @@ const JobOfferSchema = new mongoose.Schema({
   idJobPosition: [{ type: mongoose.Schema.Types.ObjectId, ref: 'JobPosition' }] ,
   titre: { type: String, required: true },
   description: { type: String, required: true },
-  exigences: [{ type: String }],
   dateDeCreation: { type: Date, default: Date.now },
   dateDeMiseAJour: { type: Date, default: Date.now },
   dateDeSuppression: { type: Date, default: null }
