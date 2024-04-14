@@ -6,6 +6,7 @@ import Stat from '../components/UI/stat';
 import TimelineC from '../components/UI/Timeline';
 import Quote from '../components/UI/Quote';
 import Jobcard from '../components/UI/Jobcard';
+import Trusted from '../components/UI/Trusted';
 
 function Home() {
   // Define initial job data
@@ -32,10 +33,12 @@ function Home() {
             link={jobOffer.link}
           />
         ))}
-      </div>
-      <div className="flex justify-center mt-4">
+        </div>
+        <div className="flex justify-center mt-4">
         <Link to="/" className="btn">View More</Link>
+        
       </div>
+       <Trusted/>
     </div>
   );
 }

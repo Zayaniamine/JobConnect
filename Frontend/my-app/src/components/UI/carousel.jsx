@@ -8,8 +8,9 @@ function Carousel() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('https://newsapi.org/v2/everything?q=bitcoin&apiKey=bdd69cb4ec514d50bce4db0f107df2f4');
-        setNewsItems(response.data.articles);
+        // Updated API call to match the LatestNews component
+        const response = await axios.get('https://newsdata.io/api/1/news?country=tn&category=business&apikey=pub_41355618f4e2fe5bcfac32fadc1327ccb0d68');
+        setNewsItems(response.data.results); // Ensure this matches the response structure
       } catch (error) {
         console.error("Error fetching news:", error);
       }
@@ -31,12 +32,12 @@ function Carousel() {
       <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
         {newsItems.map((item, index) => (
           <div
-            key={index}
+            key={item.article_id || index}
             className={`duration-700 ease-in-out ${index === activeIndex ? 'block' : 'hidden'}`}
             data-carousel-item
           >
             <img
-              src={item.urlToImage}
+              src={item.image_url || "https://via.placeholder.com/400"}
               className="absolute block w-full h-full object-cover object-center"
               alt={item.title}
             />

@@ -10,7 +10,7 @@ module.exports = {
   },
 
   daisyui: {
-    themes: false, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
+    themes: ["light", "dark", "cupcake"], // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
     darkTheme: "light", // name of one of the included themes for dark mode utils: true, // adds responsive and modifier utility classes
   
     themeRoot: ":root", // The element that receives theme color CSS variables
@@ -20,6 +20,8 @@ module.exports = {
   plugins: [
     require("daisyui"),
     require('flowbite/plugin'),
-    require("@tailwindcss/typography"), require("daisyui"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/forms")
+    
   ],
 }

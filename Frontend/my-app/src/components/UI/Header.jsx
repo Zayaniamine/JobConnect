@@ -20,6 +20,7 @@ Build your profile and start connecting.</h3>
           <button ref={buttonRef} className="btn border-t-neutral-950" onClick={handleScroll}>learn more</button>
         </div>
       </div>
+
     </div>
   )
 }

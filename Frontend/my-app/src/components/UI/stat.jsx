@@ -2,7 +2,7 @@ import React from 'react';
 
 function Stat({ jobPostings=0, newCandidates=0, totalEmployers=0 }) {
   return (
-    <div className='flex items-center justify-center  ' >*
+    <div className='flex items-center justify-center  ' >
       <div className=" stats stats-vertical lg:stats-horizontal shadow w-8/12 pt-5">
         <div className="stat">
           <div className="stat-title">Total Job Postings</div>

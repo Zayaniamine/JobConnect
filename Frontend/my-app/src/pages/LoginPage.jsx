@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.png'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -18,31 +17,18 @@ const LoginPage = () => {
     const userRole = 'candidate'; // Replace with actual role fetched from backend
     switch (userRole) {
       case 'candidate':
-        navigate('/candidate/dashboard');
+        navigate('/candidate');
         break;
       case 'employer':
-        navigate('/employer/dashboard');
+        navigate('/employer');
         break;
-      case 'admin':
-        navigate('/admin/dashboard');
-        break;
+    
       default:
         navigate('/');
         break;
     }
   };
 
-  const responseGoogle = (response) => {
-    console.log(response);
-    // Extract token and user information from response
-    // Perform your backend authentication here
-    // Navigate user based on role similar to handleLogin
-  };
-
-  const onFailure = (error) => {
-    console.log(error);
-    // Handle errors or failed login attempts here
-  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -58,20 +44,7 @@ const LoginPage = () => {
             </h1>
             <h1 className='text-lg font-semibold'>Create an account or sign in.</h1>
             <p className='text-black text-xs '>By creating an account or signing in, you understand and agree to Indeed's <span className='font-bold underline'>Terms</span>. You also acknowledge our <span className='font-bold underline'>Cookie</span> and <span className='font-bold underline'>Privacy</span> policies.</p>
-            <div className=' flex  items-center justify-center ' >
-            <div className="google-login-wrapper rounded-full overflow-hidden">
-            <GoogleLogin
-             clientId="YOUR_GOOGLE_CLIENT_ID"
-             buttonText="Login with Google"
-             onSuccess={responseGoogle}
-             onFailure={onFailure}
-             cookiePolicy={'single_host_origin'}
-             className='w-full font-medium rounded-full text-sm px-5 py-2.5 text-center my-2'
-           />
-           </div>
-             
-              </div>
-              <h1 className=' flex text-xs font-semibold justify-center'>OR</h1>
+      
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
@@ -81,8 +54,9 @@ const LoginPage = () => {
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                 <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
-            <button type="submit" className="w-full text-black bg-primary-600 hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">Sign in</button>
-                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+              <button type="submit" className="w-full text-white bg-slate-800 hover:bg-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Sign in
+              </button>                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                           Don’t have an account yet? <Link to="/signup"  className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</Link>
                       </p> 
             </form>
@@ -90,6 +64,7 @@ const LoginPage = () => {
         </div>
         </div>
       </div>
+    
     </section>
   );
 };

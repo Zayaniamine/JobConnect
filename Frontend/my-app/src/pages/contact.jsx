@@ -1,6 +1,5 @@
 import React from 'react';
 import NavBar from '../components/UI/Navbar';
-
 function ContactForm() {
     return (
         <div >
@@ -74,6 +73,7 @@ function ContactForm() {
                 </div>
             </div>
         </div>
+        
         </div>
     );
 }
