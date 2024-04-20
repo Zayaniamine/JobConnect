@@ -29,7 +29,7 @@ function LatestNews() {
           <h2 className="card-title">{item.title}</h2>
           <p className="flex-grow  leading-snug overflow-ellipsis overflow-hidden max-h-1">{item.description}</p> {/* Ensures description takes up available space, pushing the button down */}
           <div className="card-actions justify-end mt-auto"> {/* mt-auto pushes this div to the bottom */}
-            <a href={item.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Read More</a>
+            <a href={item.link} target="_blank" rel="noopener noreferrer" className="btn bg-cyan-700 text-white">Read More</a>
           </div>
         </div>
       </div>

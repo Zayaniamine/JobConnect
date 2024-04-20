@@ -1,44 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import NavB from '../components/UI/Navbar';
 import Header from '../components/UI/Header';
 import Stat from '../components/UI/stat';
 import TimelineC from '../components/UI/Timeline';
-import Quote from '../components/UI/Quote';
 import Jobcard from '../components/UI/Jobcard';
 import Trusted from '../components/UI/Trusted';
+import NewsLetter from '../components/UI/NewsLetter';
 
 function Home() {
-  // Define initial job data
-  const jobOffers = [
-    { id: 1, title: 'Frontend Developer', description: 'We are looking for a skilled frontend developer proficient in React.js and CSS to join our team.', link: '/frontend-developer' },
-    { id: 2, title: 'Backend Engineer', description: 'Join our backend engineering team to work on scalable and robust backend systems using Node.js and MongoDB.', link: '/backend-engineer' },
-    { id: 3, title: 'UI/UX Designer', description: 'Are you passionate about designing user interfaces and experiences? We have an exciting opportunity for a UI/UX Designer.', link: '/ui-ux-designer' },
-    { id: 4, title: 'Data Scientist', description: 'Join our data science team to analyze large datasets and build predictive models using Python and TensorFlow.', link: '/data-scientist' },
-  ];
+  const [jobOffers, setJobOffers] = useState([]);
+
+  useEffect(() => {
+    const fetchJobOffers = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/jobs');
+        setJobOffers(response.data);
+        console.log(response.data) 
+      } catch (error) {
+        console.error('Error fetching job offers:', error);
+      }
+    };
+
+    fetchJobOffers();
+  }, []);
 
   return (
     <div>
       <NavB />
       <Header />
-      <Stat />
       <TimelineC />
-      <Quote />
-      <div className='flex  flex-wrap  justify-center items-center p-4'>
-        {jobOffers.map((jobOffer) => (
+      <Stat />
+      
+      <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl text-center">
+              Discover Job Oportunities
+            </h2>
+      <div className='  flex justify-center gap-10 '>
+     
+        {jobOffers.slice(0, 3).map((jobOffer) => (
           <Jobcard
             key={jobOffer.id}
-            title={jobOffer.title}
+            title={jobOffer.titre}
             description={jobOffer.description}
-            link={jobOffer.link}
+            skills={jobOffer.skills}
+            clotureOffre={jobOffer.clotureOffre}
+            disponibilite={jobOffer.disponibilite}
+
+            link={jobOffer.link} // Ensure the 'link' prop is correctly assigned
           />
         ))}
-        </div>
-        <div className="flex justify-center mt-4">
-        <Link to="/" className="btn">View More</Link>
-        
       </div>
-       <Trusted/>
+      <div className="flex justify-center mt-4">
+        <Link to="/jobs" className="btn">View More</Link> {/* Update the Link to route to the correct path */}
+      </div>
+      <Trusted />
+      <NewsLetter/>
     </div>
   );
 }

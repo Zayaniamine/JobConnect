@@ -62,15 +62,13 @@ const EmployerSidebar = () => {
           
           <Sidebar.Collapse icon={HiBriefcase} label="Job Offers">
         <Sidebar.Item as={Link} to="/employer/create-job-offer">
-          Create Job Offer
+          Job Offer
         </Sidebar.Item>
-        <Sidebar.Item as={Link} to="/job-offers/active">
+        <Sidebar.Item as={Link} to="/Employer/ActiveJobs">
           Active Offers
         </Sidebar.Item>
       
-        <Sidebar.Item as={Link} to="/job-offers/stats">
-          Job Offer list
-        </Sidebar.Item>
+      
       </Sidebar.Collapse>
          
           <Sidebar.Item as={Link} to="/employer/settings" icon={HiClipboardList}>

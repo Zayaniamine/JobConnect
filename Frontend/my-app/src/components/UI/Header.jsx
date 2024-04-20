@@ -9,7 +9,8 @@ function Header() {
   }
 
   return (
-    <div className="bg-[url('header.jpg')]   hero min-h-[74vh]" >
+    
+    <div className="bg-[url('header.jpg')]   hero min-h-[74vh] sticky" >
       <div className="hero-overlay bg-opacity-60"></div>
 
       <div className="hero-content text-center text-neutral-content">

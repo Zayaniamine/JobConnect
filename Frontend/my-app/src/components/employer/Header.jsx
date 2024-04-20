@@ -1,13 +1,17 @@
-import React from "react";
+import {React} from "react";
 import { Navbar } from "flowbite-react";
 import logo from '../../assets/logo.png';
 import { PlusIcon} from '@heroicons/react/solid';
 import { Link } from "react-router-dom";
 
 function Header({ toggleSidebar }) {
+
+
+
+ 
   return (
     <Navbar  fluid rounded className="fixed top-0 z-50 w-full bg-gray-50 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-      <Navbar.Brand >
+      <Navbar.Brand as={Link} to="/" >
      
         <img src={logo} height={200} width={200} className="absolute  " alt="" />
       </Navbar.Brand >

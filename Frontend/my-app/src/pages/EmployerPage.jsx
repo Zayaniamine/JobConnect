@@ -3,7 +3,8 @@ import Sidebar from '../components/employer/EmployerSidebar';
 import { Route, Routes } from 'react-router-dom';
 import Profile from '../components/employer/Profile';
 import Header from '../components/employer/Header';
-import Joboffers from '../components/employer/CreateJob';
+import Joboffers from '../components/employer/JobOffers';
+import ActivJob from '../components/employer/ActivJob';
 
 function EmployerPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);  // State to manage sidebar visibility
@@ -18,18 +19,21 @@ function EmployerPage() {
         <Header toggleSidebar={toggleSidebar} />
         {isSidebarOpen && <Sidebar />} 
       </div>
-      <div className={`ml-${isSidebarOpen ? '64' : '0'} flex-1`}> 
       
-        <div className=" p-6 mt-10 overflow-auto">
+      <div className={`ml-${!(isSidebarOpen) ? '64' : '0'} flex-1`}> 
+
+        <div className="  ml-64 p-6 mt-10 overflow-auto">
           
           <Routes>
             <Route path="/settings" element={<Profile />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-job-offer" element={<Joboffers />} />
+            <Route path="/ActiveJobs" element={<ActivJob />} />
             {/* Define other nested routes for employer section */}
           </Routes>
         </div>
-      </div>
+        </div>
+      
     </>
   );
 }
