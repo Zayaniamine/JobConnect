@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { Button, TextInput, Label, Datepicker } from 'flowbite-react';
 import axios from 'axios';
 import { Alert } from "flowbite-react";
@@ -17,6 +17,13 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
     ]);
     const [selectedJobType, setSelectedJobType] = useState('');
     const [alert, setAlert] = useState({ show: false, message: '' });
+    const modalRef = useRef(null);
+    useEffect(() => {
+        if (isOpen && modalRef.current) {
+            // Scrolls to the top of the modal when it opens
+            modalRef.current.scrollTop = 0;
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (initialData) {
@@ -82,14 +89,13 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
 
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75 z-50 flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
-                {alert.show && (
+        <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[calc(100vh-4rem)] overflow-y-auto p-5 " ref={modalRef}>                {alert.show && (
                     <Alert color="failure" icon={HiInformationCircle}>
                         <span>{alert.message}</span>
                     </Alert>
                 )}
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">{initialData ? 'Edit Job Position' : 'Create New Job Position'}</h2>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4 ">
                     {/* Job Title */}
                     <Label htmlFor="title" value="Job Title" />
                     <TextInput id="title" type="text" placeholder="Enter job title" required value={title} onChange={(e) => setTitle(e.target.value)} />
