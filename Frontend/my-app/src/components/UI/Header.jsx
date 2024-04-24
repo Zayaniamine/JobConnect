@@ -9,8 +9,8 @@ function Header() {
   }
 
   return (
-    
-    <div className="bg-[url('header.jpg')]   hero min-h-[74vh] sticky" >
+    <>
+    <div className="bg-[url('header.webp')]   hero min-h-[74vh] sticky" >
       <div className="hero-overlay bg-opacity-60"></div>
 
       <div className="hero-content text-center text-neutral-content">
@@ -23,6 +23,7 @@ Build your profile and start connecting.</h3>
       </div>
 
     </div>
+    </>
   )
 }
 

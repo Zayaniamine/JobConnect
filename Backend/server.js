@@ -22,6 +22,7 @@ app.use('/', require('./routes/authroute'));
 
 // Start the server
 app.listen(PORT, () =>
-  logger.info(`Server is working on port ${PORT}`)
+  logger.info(`Server is Running on port ${PORT}`),
+  console.log(`Server is Running on port ${PORT}`)
 );
 

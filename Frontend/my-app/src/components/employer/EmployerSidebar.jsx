@@ -21,8 +21,8 @@ const EmployerSidebar = () => {
       // For example: const response = await fetch('/api/user');
       // const data = await response.json();
       const data = {
-        name: 'Tom Cook',
-        imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+        name: 'STEG',
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGdgh5eRjKNuYygD_THH147G3V3yJYnVwUJkWKupfDpQ&s',
         profilePath: '/Employer/profile'
       };
       setUser(data);
@@ -65,13 +65,13 @@ const EmployerSidebar = () => {
           Job Offer
         </Sidebar.Item>
         <Sidebar.Item as={Link} to="/Employer/ActiveJobs">
-          Active Offers
+          Preview Job Offers
         </Sidebar.Item>
       
       
       </Sidebar.Collapse>
          
-          <Sidebar.Item as={Link} to="/employer/settings" icon={HiClipboardList}>
+          <Sidebar.Item as={Link} to="/employer/Applications" icon={HiClipboardList}>
             Manage Applications
           </Sidebar.Item>
           <Sidebar.Item as={Link} to="/employer/settings" icon={HiUserGroup} >

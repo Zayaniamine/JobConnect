@@ -23,7 +23,7 @@ function App() {
   );
 
   return (
-    <div>
+   <>
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/Login" element={<LoginPage />} />
@@ -36,7 +36,7 @@ function App() {
         <Route path="/Employer/*" element={<EmployerPage/>} />
       </Routes>
       {showFooter && <Footer />}
-    </div>
+      </>
   );
 }
 

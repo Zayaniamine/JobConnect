@@ -27,7 +27,7 @@ function Home() {
   }, []);
 
   return (
-    <div>
+    <>
       <NavB />
       <Header />
       <TimelineC />
@@ -56,7 +56,8 @@ function Home() {
       </div>
       <Trusted />
       <NewsLetter/>
-    </div>
+   
+    </>
   );
 }
 

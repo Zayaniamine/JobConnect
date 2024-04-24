@@ -1,5 +1,5 @@
 import React from 'react';
-import userSix from '../../assets/logo.png';
+import userSix from '../../assets/logo.webp';
 import { Link } from 'react-router-dom';
 
 const Profile = () => {
@@ -211,6 +211,7 @@ const Profile = () => {
                   className="hover:text-primary"
                   aria-label="social-icon"
                 >
+                 
                   <svg
                     className="fill-current"
                     width="23"

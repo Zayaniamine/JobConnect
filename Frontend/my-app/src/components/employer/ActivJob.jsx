@@ -1,71 +1,108 @@
-import {React ,useEffect,useState}from 'react'
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Card, } from "flowbite-react";
+import { UserCircleIcon, EyeIcon } from '@heroicons/react/solid'
 
-function ActivJob() {
-    const [jobOffers,setJobOffers]=useState([])
+import JobPostsCard from './jobPostCard';
+
+function JobOffers() {
+    const [jobOffers, setJobOffers] = useState([]);
+    const [selectedJobOffer, setSelectedJobOffer] = useState(null);
 
     useEffect(() => {
         const fetchJobOffers = async () => {
-          try {
-            const response = await axios.get('http://localhost:4000/api/jobs');
-            if (response.data && Array.isArray(response.data)) {
-              setJobOffers(response.data.map(job => ({
-                ...job,
-                clotureOffre: new Date(job.clotureOffre).toLocaleDateString(),
-              })));
-            } else {
-              setJobOffers([]); // Ensure it's always an array
+            try {
+                const response = await axios.get('http://localhost:4000/api/jobs');
+                const jobOffersData = await Promise.all(response.data.map(async job => {
+                    const postsResponse = await axios.get(`http://localhost:4000/api/jobs/${job._id}/posts`);
+                    return {
+                        ...job,
+                        title: job.titre || 'No Title Provided',
+                        role: job.role || 'No Role Provided',
+                        contactEmail: job.contactEmail || 'info@company.com',
+                        imageUrl: job.imageUrl || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGdgh5eRjKNuYygD_THH147G3V3yJYnVwUJkWKupfDpQ&s',
+                        jobType: job.jobType || 'Not specified',
+                        createdOn: new Date(job.createdOn || Date.now()).toLocaleDateString(),
+                        clotureOffre: new Date(job.clotureOffre || Date.now()).toLocaleDateString(),
+                        disponibilite: job.disponibilite !== undefined ? job.disponibilite : 'Unknown',
+                        posts: postsResponse.data || []
+                    };
+                }));
+                setJobOffers(jobOffersData);
+            } catch (error) {
+                console.error('Failed to fetch job offers:', error);
+                setJobOffers([]);
             }
-          } catch (error) {
-            console.error('Failed to fetch job offers:', error);
-            setJobOffers([]); // Set to empty array on error
-          }
         };
         fetchJobOffers();
-      }, []);
+    }, []);
 
+    const handleViewJobPosts = (jobOfferId) => {
+        setSelectedJobOffer(jobOfferId);
+    };
 
-
-  return (
-    <>
-    <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between  ">
-    <h3 className="text-lg font-semibold text-gray-900">Active Offers</h3>
-    
-  </div>
-  <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4 pt-5">
-    {jobOffers.length > 0 ? jobOffers.map((offer, index) => (
-      <Card key={offer._id} className="relative hover:shadow-lg ">
-        <span className={`absolute top-2 right-2 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${offer.disponibilite ? 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' : 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'}`}>
-          {offer.disponibilite ? 'Active' : 'Closed'}
-        </span>
-        <span className='absolute top-2 right-14 mr-2 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-blue- text-blue-700 ring-1 ring-inset ring-blue-600/20'>
-              {offer.jobType}
-            </span>
-        <div className="p-5">
-          <h5 className="text-xl font-bold tracking-tight text-gray-900">
-            {offer.titre}
-          </h5>
-          <p className="font-normal text-gray-700 my-2">
-            {offer.description}
-          </p>
-          <div className="mt-3">
-            {offer.skills && offer.skills.map((skills, idx) => (
-              <span key={idx} className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                {skills}
-              </span>
-            ))}
-          </div>
-          <p className="text-sm text-gray-600">
-            Closing date: {offer.clotureOffre}
-          </p>
-        </div>
-       
-      </Card>
-    )) : <p>No Job Offers Available</p>}
-  </div>
-  </>
-  )
+    return (
+        <>
+            <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {jobOffers.map((offer) => (
+                    <li key={offer._id} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+                        {/* Job Offer Card Content */}
+                        <div className="flex w-full items-center justify-between space-x-6 p-6">
+                            <div className="flex-1 truncate">
+                                <div className="flex items-center space-x-3">
+                                    <h3 className="truncate text-sm font-medium text-gray-900">{offer.title}</h3>
+                                    <span className={`inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ${offer.disponibilite ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} ring-1 ring-inset ring-${offer.disponibilite ? 'green' : 'red'}-600/20`}>
+                                        {offer.disponibilite ? 'Active' : 'Closed'}
+                                    </span>
+                                  
+                                </div>
+                                <p className="mt-1 truncate text-sm text-gray-500">{offer.description}</p>
+                                <div className="flex flex-wrap">
+                                    {offer.posts.map(post => (
+                                        <span key={post._id} className="m-1 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-cyan-900">
+                                            {post.title}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                            <img className=" flex-shrink-0 rounded-full bg-gray-300"  src={offer.imageUrl} width={80} height={100} alt="" />
+                        </div>
+                        <div>
+                            <div className="-mt-px flex divide-x divide-gray-200">
+                                <div className="flex w-0 flex-1">
+                                    <a
+                                        
+                                        className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                                    >
+                                        <UserCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                        Company profile
+                                    </a>
+                                </div>
+                                <div className="-ml-px flex w-0 flex-1">
+                                    <button
+                                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                                        onClick={() => handleViewJobPosts(offer._id)} // Open modal when clicked
+                                    >
+                                        <EyeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                        Details
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="p-4 text-xs text-gray-500">
+                                Created on: {offer.createdOn} | Closing Date: {offer.clotureOffre}
+                            </div>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+            {/* Render JobPostsModal if a job offer is selected */}
+            {selectedJobOffer && (
+                <JobPostsCard
+                    jobOfferId={selectedJobOffer}
+                    onClose={() => setSelectedJobOffer(null)}
+                />
+            )}
+        </>
+    );
 }
 
-export default ActivJob
+export default JobOffers;

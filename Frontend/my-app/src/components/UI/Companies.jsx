@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
-import companylogo from '../../assets/logo.png';
+import companylogo from '../../assets/logo.webp';
 import Navbar from "./Navbar";
 export function FeaturedCompanies() {
     const navigate=useNavigate()
