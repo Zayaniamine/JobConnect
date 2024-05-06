@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.webp';
 
-function HomeNav() {
+function Nav() {
  
 
 
@@ -29,4 +29,4 @@ function HomeNav() {
   );
 }
 
-export default HomeNav;
+export default Nav;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import companylogo from '../../assets/logo.webp';
-import Navbar from "./HomeNav";
+import HomeNav from "./Nav";
 export function FeaturedCompanies() {
     const navigate=useNavigate()
     const [searchTerm, setSearchTerm] = useState("");
@@ -32,7 +32,7 @@ export function FeaturedCompanies() {
        
         <div>
 
-           <Navbar/>
+          <HomeNav/>
             <div className="my-8 text-center">
                 <Typography variant="h3" color="blue-gray" className="mb-4">
                     Explore Featured Companies

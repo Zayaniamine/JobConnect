@@ -1,5 +1,5 @@
 import React from 'react'
-import HomeNav from '../components/UI/HomeNav'
+import HomeNav from '../components/UI/Nav'
 import Carousel from '../components/UI/carousel'
 import MidsectionNews from '../components/UI/midsectionNews'
 function NewsPage() {
