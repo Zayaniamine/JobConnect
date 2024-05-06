@@ -1,44 +1,59 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Base User Schema
 const userSchema = new Schema({
     username: {
         type: String,
-        required: true,
+       
     },
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
     password: {
         type: String,
-        required: true,
+        required: true
     },
-    Role: {
+   
+    role: {
         type: String,
         required: true,
-    },
-    companyName: {
-        type: String,
-    },
-    industryField: {
-        type: String,
-    },
-    logoCompany: {
-        type: String,
-    },
-    address: {
-        type: String,
-    },
-    websiteUrl: {
-        type: String,
-    },
-    linkedin: {
-        type: String,
-    },
+        enum: ['JobSeeker', 'Employer']
+    }
+}, { discriminatorKey: 'role', collection: 'users' });
+
+const User = mongoose.model('User', userSchema);
+
+// Employer Discriminator Schema
+const employerSchema = new Schema({
+    companyName: String,
+    IndustryField: String,
+    companySize: Number,
+    address: String,
+    urlSiteWeb: String,
+    PhoneNumber: String,
+    description: String,
+    socialMediaURL: String,
+    logoCompany: String
 });
 
-const UserModel = mongoose.model('Users', userSchema);
+const Employer = User.discriminator('Employer', employerSchema);
 
-module.exports = UserModel;
+// Job Seeker Discriminator Schema
+const jobSeekerSchema = new Schema({
+    nom: String,
+    prenom: String,
+    photo: String,
+    PhoneNumber: String,
+    preferencesRecherche:[String]
+});
+
+const JobSeeker = User.discriminator('JobSeeker', jobSeekerSchema);
+
+module.exports = {
+    User,
+    JobSeeker,
+    Employer
+};

@@ -314,3 +314,23 @@
 2024-04-21T00:16:44.604Z info: Server is working on port 4000
 2024-04-21T00:16:46.718Z info: Server is working on port 4000
 2024-04-22T16:53:33.089Z info: Server is working on port 4000
+2024-04-25T16:39:59.335Z info: User registered: user@example.com
+2024-04-25T16:41:37.651Z info: User registration failed - email user@example.com already exists
+2024-04-25T16:41:44.792Z info: User registered: user@exanlmple.com
+2024-05-02T21:54:07.164Z error: Server error: Users validation failed: username: Path `username` is required.
+2024-05-02T21:55:50.785Z error: Server error: Users validation failed: username: Path `username` is required.
+2024-05-02T22:55:35.944Z info: User logged in: Tests@gmail.com
+2024-05-02T23:02:05.273Z info: User logged in: Tests@gmail.com
+2024-05-02T23:02:17.118Z info: User logged in: Tests@gmail.com
+2024-05-02T23:03:45.199Z info: User logged in: Tests@gmail.com
+2024-05-03T15:22:13.349Z info: User logged in: Salwa1@GMAIL.COM
+2024-05-03T19:36:36.215Z info: User logged in: Zayani.ge@gmail.com
+2024-05-05T21:58:09.190Z info: User logged in: Test0@gmail.com
+2024-05-05T21:59:05.755Z info: User logged in: Test0@gmail.com
+2024-05-05T22:01:06.800Z info: User logged in: Test0@gmail.com
+2024-05-05T22:04:08.130Z info: User logged in: Test0@gmail.com
+2024-05-05T22:12:35.253Z info: User logged in: Test0@gmail.com
+2024-05-05T22:14:18.635Z info: User logged in: Test0@gmail.com
+2024-05-05T22:17:51.955Z info: User logged in: Test0@gmail.com
+2024-05-06T21:57:57.993Z info: User logged in: zayani@gmail.com
+2024-05-06T22:34:30.049Z info: User logged in: Zayani008@gmail.com

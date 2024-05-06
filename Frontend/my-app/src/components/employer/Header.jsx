@@ -12,7 +12,7 @@ function Header({ toggleSidebar}) {
     <Navbar  fluid rounded className="fixed top-0 z-50 w-full bg-gray-50 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <Navbar.Brand as={Link} to="/" >
      
-        <img src={logo} height={200} width={200} className="absolute  " alt="" />
+        <img src={logo} height={200} width={200} className="absolute top-[-35px] " alt="" />
       </Navbar.Brand >
       <div className="flex md:order-2">
        <Link to="/Employer/create-job-offer" >

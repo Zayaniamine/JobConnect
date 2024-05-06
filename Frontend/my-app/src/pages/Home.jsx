@@ -30,6 +30,7 @@ function Home() {
     <>
       <NavB />
       <Header />
+      
       <TimelineC />
       <Stat />
       

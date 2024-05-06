@@ -1,23 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from "flowbite-react";
-import { UserIcon, LocationMarkerIcon as MapPinIcon, MailIcon as EnvelopeIcon, PhoneIcon, HomeIcon } from '@heroicons/react/solid';
+import { LocationMarkerIcon as MapPinIcon, MailIcon as EnvelopeIcon, PhoneIcon, HomeIcon } from '@heroicons/react/solid';
 
 function ProfileCard() {
-  // Assuming company information structure
-  const company = {
-    name: 'Jese Leos',
-    sector: 'Technology', // Changed 'Sector' to 'sector' to match JavaScript naming conventions
-    location: 'San Francisco, USA',
-    email: 'yourname@flowbite.com',
-    address: '92 Miles Drive, Newark, NJ 07103, California, United States of America',
-    phone: '+00 123 456 789 / +12 345 678',
-    logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGdgh5eRjKNuYygD_THH147G3V3yJYnVwUJkWKupfDpQ&s', // Place your actual logo path here
-  };
+  const [company, setCompany] = useState({
+    name: '',
+    sector: '',
+    location: '',
+    email: '',
+    address: '',
+    phone: '',
+    logoUrl: ''
+  });
+
+  useEffect(() => {
+    const userId = sessionStorage.getItem('userId');
+    fetch(`http://localhost:4000/employer/profile/${userId}`)
+      .then(response => response.json())
+      .then(data => setCompany({
+        name: data.companyName,
+        sector: data.IndustryField,
+        description: data.description,
+        location: data.address,
+        email: data.email,
+        address: data.address,
+        phone: data.PhoneNumber,
+        logoUrl: `http://localhost:4000/uploads/${data.logoCompany.split('\\').pop()}` // Assuming Windows path in logoCompany
+      }))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
 
   return (
-    <Card className='w-4/12' style={{ height: 'auto' }}> {/* Changed fixed height to 'auto' for dynamic height */}
+    <Card className='w-4/12' style={{ height: 'auto' }}>
       <div className="flex flex-col justify-between p-4">
-        <div className="flex space-x-4 mb-4"> {/* Added mb-4 for spacing */}
+        <div className="flex space-x-4 mb-4">
           <img
             src={company.logoUrl}
             alt="Company logo"

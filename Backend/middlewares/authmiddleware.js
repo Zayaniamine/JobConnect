@@ -28,7 +28,8 @@ const authMiddleware = (req, res, next) => {
 };
 
 const jwt = require('jsonwebtoken');
-const { user } = require('../models/user');
+const { User, JobSeeker, Employer } = require('../models/User');
+
 const verifyToken = (req, res, next) => {
     const token = req.headers.authorization;
 

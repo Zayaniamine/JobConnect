@@ -1,11 +1,11 @@
 import React from 'react'
-import NavBar from '../components/UI/Navbar'
+import HomeNav from '../components/UI/HomeNav'
 import Carousel from '../components/UI/carousel'
 import MidsectionNews from '../components/UI/midsectionNews'
 function NewsPage() {
   return (
     <div>
-      <NavBar/>
+      <HomeNav/>
       <Carousel/>
       <MidsectionNews/>
   

@@ -1,31 +1,43 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import logo from '../assets/logo.webp'
+import logo from '../assets/logo.webp';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Perform validation if needed
-    // Submit login request to backend
-    // Upon successful login, redirect user to appropriate dashboard based on their role
+    setError('');  // Clear any existing errors
 
-    // Example redirection based on role (replace with your actual logic)
-    const userRole = 'candidate'; // Replace with actual role fetched from backend
-    switch (userRole) {
-      case 'candidate':
-        navigate('/candidate');
-        break;
-      case 'employer':
-        navigate('/employer');
-        break;
-    
-      default:
-        navigate('/');
-        break;
+    if (!email || !password) {
+      setError('Both email and password are required.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:4000/auth/login', { email, password });
+      if (response.data.error) {
+        setError(response.data.error);
+      } else {
+        // Store the received token from the server in local storage or context
+        localStorage.setItem('token', response.data.token);
+        sessionStorage.setItem('userId', response.data.user.id);
+        // Redirect based on the role
+        const userRole = response.data.user.role;
+       
+        if (userRole === 'Employer') {
+          navigate('/employer');
+        } else {
+          navigate('/jobseeker');
+        }
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Failed to login. Server error.');
     }
   };
 
@@ -46,6 +58,8 @@ const LoginPage = () => {
             <p className='text-black text-xs '>By creating an account or signing in, you understand and agree to Indeed's <span className='font-bold underline'>Terms</span>. You also acknowledge our <span className='font-bold underline'>Cookie</span> and <span className='font-bold underline'>Privacy</span> policies.</p>
       
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
+            {error && <p className="text-red-500 text-center text-xs italic">{error}</p>}
+
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                 <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" value={email} onChange={(e) => setEmail(e.target.value)} required />

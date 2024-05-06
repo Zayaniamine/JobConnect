@@ -33,9 +33,25 @@ function JobPositionForm({ isOpen, onClose, onSave, jobPosition, jobOfferId }) {
         setClosingTime('17:00'); // Reset to default time
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const dateTime = new Date(`${closingDate.toISOString().split('T')[0]}T${closingTime}:00`);
+ const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Ensure both date and time are valid
+    if (!closingDate || !closingTime) {
+        console.error('Invalid date or time');
+        return;  // Exit the function if date or time is invalid
+    }
+
+    // Properly construct the dateTime object
+    try {
+        const dateParts = closingDate.toISOString().split('T')[0];
+        const dateTime = new Date(`${dateParts}T${closingTime}:00Z`);  // Append 'Z' to indicate UTC time
+
+        // Validate dateTime is valid
+        if (isNaN(dateTime.getTime())) {
+            throw new Error('Invalid date constructed');
+        }
+
         const formData = {
             title,
             content,
@@ -43,19 +59,19 @@ function JobPositionForm({ isOpen, onClose, onSave, jobPosition, jobOfferId }) {
             jobType,
             clotureOffre: dateTime.toISOString()
         };
-        try {
-            let response;
-            if (jobPosition) {
-                response = await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}/posts/${jobPosition._id}`, formData);
-            } else {
-                response = await axios.post(`http://localhost:4000/api/jobs/${jobOfferId}/posts`, formData);
-            }
-            onSave(response.data);
-            onClose();
-        } catch (error) {
-            console.error('Failed to save the job position:', error.response || error.message);
+
+        let response;
+        if (jobPosition) {
+            response = await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}/posts/${jobPosition._id}`, formData);
+        } else {
+            response = await axios.post(`http://localhost:4000/api/jobs/${jobOfferId}/posts`, formData);
         }
-    };
+        onSave(response.data);
+        onClose();
+    } catch (error) {
+        console.error('Failed to save the job position:', error.response || error.message);
+    }
+};
 
     if (!isOpen) return null;
 

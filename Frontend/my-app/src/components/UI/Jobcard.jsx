@@ -19,7 +19,7 @@ function JobCard({ id, title, description, skills, clotureOffre, disponibilite, 
             </svg>
           </Link>
         </Button>
-        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
+        <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
        
         <p className="font-normal text-gray-700 dark:text-gray-400">
           {description || 'No Description Available'}

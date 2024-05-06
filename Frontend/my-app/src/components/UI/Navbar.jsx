@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.webp';
 
 function NavBar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      setIsScrolled(offset > 50); // Change navbar style if scrolled more than 50px
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="navbar bg-base-100 h-1 sticky">
+    <div className={`navbar ${isScrolled ? 'bg-white text-gray-700':'bg-transparent text-white'} transition-colors duration-300 ease-in-out sticky w-full z-50 top-0`}>
       <div className="navbar-start">
-        <div className="dropdown">
+      <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
@@ -18,20 +32,20 @@ function NavBar() {
             <li><Link to="/news">News</Link></li>
           </ul>
         </div>
-        <Link to="/">
-          <img src={logo} width={170} height={200} alt="Logo" />
+        <Link to="/" className="  text-xl absolute top-[-29px] left-0">
+        <img  src={logo} width={200} height={250} alt="Logo" />
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal p-0">
           <li><Link to="/">Home</Link></li>
           <li><Link to="/companies">Companies</Link></li>
           <li><Link to="/NewsPage">News</Link></li>
         </ul>
       </div>
       <div className="navbar-end">
-        <Link className="btn mr-3" to="/Login">login</Link>
-        <Link className="btn mr-3" to="/signup">Post job  |  find Job</Link>
+        <Link className="mr-10" to="/Login">login</Link>
+        <Link className=" mr-3" to="/signup">Post job  |  find Job</Link>
       </div>
     </div>
   );

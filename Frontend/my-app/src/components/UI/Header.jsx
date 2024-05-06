@@ -10,7 +10,7 @@ function Header() {
 
   return (
     <>
-    <div className="bg-[url('header.webp')]   hero min-h-[74vh] sticky" >
+    <div className="bg-[url('header.webp')]   hero min-h-[84vh] absolute top-0 " >
       <div className="hero-overlay bg-opacity-60"></div>
 
       <div className="hero-content text-center text-neutral-content">

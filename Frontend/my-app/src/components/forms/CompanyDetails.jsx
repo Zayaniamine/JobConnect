@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-function CompanyDetails({onSubmit,onBack}) {
+function CompanyDetails({onSubmit,onBack,onFormDataChange}) {
   const [formData, setFormData] = useState({
-    TIN: '',
+    
     description: '',
     address: '',
     urlSiteWeb: '',
     socialMediaURL: '',
+    companySize:(0)
   });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+      const { name, value } = e.target;
+      const updatedFormData = { ...formData, [name]: value };
+      setFormData(updatedFormData);
+      onFormDataChange(updatedFormData); // Pass updated form data to parent component
+   
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    console.log('Form Data:', formData);
-    onSubmit(formData); 
+    e.preventDefault();
+    onSubmit(formData);
+    navigate('/employer');
+    console.log(formData)
     
+  };
+     
   // Assuming onSubmit expects the form data as an argument
-  navigate('/employer');
  
-};
+ 
+
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -35,10 +42,15 @@ function CompanyDetails({onSubmit,onBack}) {
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               {/* Inputs */}
+            
+          
               <div>
-                <label htmlFor="TIN" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">TIN</label>
-                <input type="text" name="TIN" id="TIN" value={formData.TIN} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tax Identification Number" required />
+                <label htmlFor="companySize" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">companySize</label>
+                <input type="number" name="companySize" id="companySize" value={formData.companySize} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tax Identification Number" required />
               </div>
+
+
+
 
               <div>
                 <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>

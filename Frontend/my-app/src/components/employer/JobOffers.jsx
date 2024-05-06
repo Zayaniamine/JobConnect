@@ -1,11 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
-import CreateJobForm from '../forms/Createjob'; // Ensure this form is properly set up to handle creation and editing
-import JobPostsModal from './JobPosts';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon as EllipsisVerticalIcon } from '@heroicons/react/solid';
 import { Toast } from "flowbite-react";
 import { HiCheck, HiX } from "react-icons/hi";
+import CreateJobForm from '../forms/Createjob';
+import JobPostsModal from './JobPosts';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -16,23 +16,24 @@ function JobOffers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
-  const [jobPostsModalVisible, setJobPostsModalVisible] = useState(false); // Separate state for posts modal
+  const [jobPostsModalVisible, setJobPostsModalVisible] = useState(false);
   const [selectedJobOfferId, setSelectedJobOfferId] = useState(null);
-  const [selectedPosts, setSelectedPosts] = useState([]); // Store selected posts for the modal
+  const [selectedPosts, setSelectedPosts] = useState([]);
 
   useEffect(() => {
     const fetchJobOffers = async () => {
       try {
         const response = await axios.get('http://localhost:4000/api/jobs');
+        const today = new Date();
         setJobOffers(response.data.map(job => ({
           ...job,
           clotureOffre: new Date(job.clotureOffre).toLocaleDateString(),
           dateDeCreation: new Date(job.dateDeCreation).toLocaleDateString(),
+          disponibilite: new Date(job.clotureOffre) >= today && new Date(job.dateDeCreation) <= today,
         })));
       } catch (error) {
         console.error('Failed to fetch job offers:', error);
         setJobOffers([]);
-     
       }
     };
     fetchJobOffers();
@@ -47,6 +48,8 @@ function JobOffers() {
     const formattedJobOffer = {
       ...jobOffer,
       clotureOffre: new Date(jobOffer.clotureOffre).toLocaleDateString(),
+      dateDeCreation: new Date(jobOffer.dateDeCreation).toLocaleDateString(),
+      disponibilite: new Date(jobOffer.clotureOffre) >= new Date() && new Date(jobOffer.dateDeCreation) <= new Date(),
     };
     const updatedOffers = [...jobOffers];
     if (editIndex !== null) {
@@ -79,30 +82,26 @@ function JobOffers() {
   };
 
   const showPostsModal = (jobOffer) => {
-    console.log('Selected Job Offer ID:', jobOffer._id); // Check what ID is received
     setSelectedJobOfferId(jobOffer._id);
-    setSelectedPosts(jobOffer.posts); // Assuming you want to display posts too
+    setSelectedPosts(jobOffer.posts);
     setJobPostsModalVisible(true);
-    
-  }
+  };
 
   const closePostsModal = () => {
-    setJobPostsModalVisible(false); // Close the modal
+    setJobPostsModalVisible(false);
   };
-  
 
   return (
     <div>
       <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Job Postings</h3>
-        <button onClick={() => toggleForm()} className="mt-3 inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-800">
+        <button onClick={() => toggleForm()} className="mt-3 inline-flex items-center rounded-md text-cyan-700 bg-white ring-1 px-3 py-2 text-sm font-semibold  shadow-sm hover:bg-gray-50">
           Create New Job Offer
         </button>
       </div>
-      
       <ul role="list" className="divide-y divide-gray-100">
         {jobOffers.map((offer, index) => (
-          <li key={offer._id}  className="flex items-center justify-between gap-x-6 py-5">
+          <li key={offer._id} className="flex items-center justify-between gap-x-6 py-5">
             <div className="min-w-0">
               <div className="flex items-start gap-x-3">
                 <p className="text-sm font-semibold leading-6 text-gray-900">{offer.titre}</p>
@@ -198,6 +197,7 @@ function JobOffers() {
         />
       )}
     </div>
+
   );
 }
 

@@ -1,93 +1,85 @@
-const User = require('../models/user');
+/*const User = require('../models/user');*/
 const bcrypt = require('bcrypt');
 const logger = require('../middlewares/logger');
 const jwt = require('jsonwebtoken');
 const secretKey = '21051712022002';
+const { User, JobSeeker, Employer } = require('../models/User');
 
 
 const test = (req,res)=>{
     res.json('test is working ')
 }
 const registerUser = async (req, res) => {
+    const { email, password, role, userId, ...otherDetails } = req.body;
+
     try {
-        const { username, email, password, Role, companyName, industryField, address, websiteUrl, linkedin } = req.body;
-
-        if (!username) {
-            return res.json({
-                error: 'Username is required'
-            });
-        }
-
-        if (!email) {
-            return res.json({
-                error: 'Email is required'
-            });
-        }
-
-        if (!password ) {
-            return res.json({
-                error: 'Password is required '
-            });
-        }
-        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
-
-if (!strongPasswordRegex.test(password)) {
-    return res.json({
-        error: 'Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long'
-    });
-}
-
-        if (!Role) {
-            return res.json({
-                error: 'Role is required'
-            });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-
-        // Check if user with the same email already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            logger.info(`User registration failed - email ${email} already exists`);
-            return res.json({
-                error: 'User with this email already exists'
-            });
-        }
-
-        // Create a new user
-        const newUser = new User({
-             username ,
-              email ,
-               password :hashedPassword ,
-             Role
-        });
-        if (Role === 'employeur') {
-
-            // Vérifier que les champs supplémentaires obligatoires sont présents
-            if (!companyName || !industryField || !logoCompany || !address || !websiteUrl || !linkedin) {
-                return res.status(400).json({ error: 'Missing required fields for employer role' });
+        if (userId) {
+            // Step 2: Completing or updating user profile
+            const userUpdate = await User.findById(userId);
+            if (!userUpdate) {
+                return res.status(404).json({ error: 'User not found.' });
             }
-                        const logoCompany = req.file.path;
 
+            Object.assign(userUpdate, otherDetails);
+            
+            // Assign file paths if files were uploaded
+            if (req.files) {
+                if (req.files.photo) {
+                    userUpdate.photo = req.files.photo[0].path;
+                }
+                if (req.files.logoCompany) {
+                    userUpdate.logoCompany = req.files.logoCompany[0].path;
+                }
+            }
 
-            // Ajouter les champs supplémentaires
-            newUser.companyName = companyName;
-            newUser.industryField = industryField;
-            newUser.logoCompany = logoCompany;
-            newUser.address = address;
-            newUser.websiteUrl = websiteUrl;
-            newUser.linkedin = linkedin;
+            await userUpdate.save();
+            return res.status(200).json({ success: true, message: 'Profile updated successfully.', user: userUpdate });
+            
+        } else {
+            // Step 1: Initial registration
+            if (!email || !password || !role) {
+                return res.status(400).json({ error: 'Email, password, and role are required.' });
+            }
+
+            const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{6,}$/;
+            if (!strongPasswordRegex.test(password)) {
+                return res.status(400).json({ error: 'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 6 characters long.' });
+            }
+
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                return res.status(409).json({ error: 'User with this email already exists.' });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            let newUser = new User({
+                email,
+                password: hashedPassword,
+                role,
+                ...otherDetails
+            });
+
+            // Assign file paths if files were uploaded
+            if (req.files) {
+                if (req.files.photo) {
+                    newUser.photo = req.files.photo[0].path;
+                }
+                if (req.files.logoCompany) {
+                    newUser.logoCompany = req.files.logoCompany[0].path;
+                }
+            }
+
+            await newUser.save();
+            return res.status(201).json({ success: true, message: 'Registration successful. Please complete your profile.', userId: newUser._id });
         }
-        // Save the new user to the database
-        await newUser.save();
-        logger.info(`User registered: ${email}`); // Enregistrement de l'inscription de l'utilisateur
-
-        res.json('User added successfully');
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error('Server error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
+
 const loginAttempts = {}; // Pour suivre les tentatives de connexion infructueuses
 let lockedAccounts = {}; // Pour suivre les comptes bloqués
 
@@ -105,7 +97,7 @@ const login = async (req, res) => {
             });
         }
 
-    
+      console.log( { email, password })
 
         const user = await User.findOne({ email });
 
@@ -176,12 +168,31 @@ const login = async (req, res) => {
                 id: user._id,
                 email: user.email,
                 username: user.username,
-                Role: user.Role
+                role: user.role
             }
         });
     } catch (error) {
     console.error(error);
         res.status(500).json({ error: 'Server error' });
+    }
+};
+const tokenBlacklist = new Set();
+
+const logout = (req, res) => {
+    try {
+        // Optionally blacklist the JWT token
+        if (req.body.token) {
+            tokenBlacklist.add(req.body.token);
+            console.log(`Token blacklisted: ${req.body.token}`);
+        }
+
+        // Log the user logout action (optional)
+        console.log(`User ${req.body.userId || 'unknown'} logged out successfully`);
+
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
@@ -192,5 +203,6 @@ module.exports = {
     registerUser,
     login,
     lockedAccounts,
-    loginAttempts
+    loginAttempts,
+    logout
 };
