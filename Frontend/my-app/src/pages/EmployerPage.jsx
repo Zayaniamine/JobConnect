@@ -23,9 +23,9 @@ function EmployerPage() {
         {isSidebarOpen && <Sidebar />} 
       </div>
       
-      <div className={`ml-${(isSidebarOpen) ? '64' : '0'} flex-1`}> 
+      <div className='flex-1'> 
 
-        <div className="   p-6 mt-10 overflow-auto">
+        <div className={`ml-${(isSidebarOpen) ? '64' : '0'} p-6 mt-10 overflow-auto`}>
           
           <Routes>
             <Route path="/settings" element={<EditCompanyProfile/>} />
