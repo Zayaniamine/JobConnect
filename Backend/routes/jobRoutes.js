@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const jobController = require('../controllers/jobcontroller');
+const jobController = require('../controllers/jobcontroller'); // Ensure this path is correct
 
 router.post('/create-job', jobController.createJob);
 router.get('/', jobController.getAllJobs);
@@ -11,4 +11,6 @@ router.post('/:jobOfferId/posts', jobController.addJobPost);
 router.delete('/:jobOfferId/posts/:postId', jobController.deleteJobPost);
 router.put('/:jobOfferId/posts/:postId', jobController.updateJobPost);
 router.get('/:id/posts', jobController.getJobPostsByOfferId);
+router.get('/employer/:employerId', jobController.getJobOffersByEmployerId);
+
 module.exports = router;

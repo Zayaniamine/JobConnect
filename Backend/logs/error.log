@@ -4,3 +4,5 @@ undefined
 undefined
 20240505	20:57:28	46719ef5-6f37-4c32-b851-500a2a6faaf1	SyntaxError:Expected double-quoted property name in JSON at position 170	 GET	/employer/employer/update-profile/663541ca9d9ba7653e8dfc31	
 undefined
+20240509	05:53:58	d26863a8-eb8a-4d0c-a681-26ab878dc080	SyntaxError:Expected double-quoted property name in JSON at position 1812	 POST	/jobseeker/create-pdf	
+undefined

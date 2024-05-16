@@ -10,12 +10,13 @@ import Contact from './pages/contact';
 import RegisterForm from './components/forms/RegisterForm';
 import CandidateForm from './components/forms/CandidateForm';
 import EmployerPage from './pages/EmployerPage';
+import CandidatePage from './pages/CandidatePage';
 
 function App() {
   const location = useLocation();
   
   // Paths where the footer should not be displayed
-  const pathsWithoutFooter = ["/Login", "/signup", "/Employer/*","/employer/*"]; // Adjust as needed
+  const pathsWithoutFooter = ["/Login", "/signup", "/Employer/*","/employer/*","/jobSeeker/*","/JobSeeker/*"]; // Adjust as needed
   
   // Check if the current path is one of the paths where we don't want the footer
   const showFooter = !pathsWithoutFooter.some(path => 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/RegisterEmployerForm" element={<RegisterForm />} />
         <Route path="/RegisterCandidateForm" element={<CandidateForm />} />
         <Route path="/Employer/*" element={<EmployerPage/>} />
+        <Route path="/Jobseeker/*" element={<CandidatePage/>} />
       </Routes>
       {showFooter && <Footer />}
       </>

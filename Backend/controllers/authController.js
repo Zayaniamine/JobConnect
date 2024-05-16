@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const logger = require('../middlewares/logger');
 const jwt = require('jsonwebtoken');
 const secretKey = '21051712022002';
-const { User, JobSeeker, Employer } = require('../models/User');
+const { User, JobSeeker, Employer, } = require('../models/User');
 
 
 const test = (req,res)=>{
@@ -30,6 +30,9 @@ const registerUser = async (req, res) => {
                 if (req.files.logoCompany) {
                     userUpdate.logoCompany = req.files.logoCompany[0].path;
                 }
+            }
+            if (req.fileValidationError) {
+                return res.status(400).json({ error: req.fileValidationError });
             }
 
             await userUpdate.save();

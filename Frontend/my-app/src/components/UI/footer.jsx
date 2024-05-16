@@ -19,9 +19,6 @@ function footer() {
               <Footer.LinkGroup>
   <Footer.Link to="/">Home</Footer.Link>
   <Footer.Link to="/about">About</Footer.Link>
-  <Footer.Link to="/">Services</Footer.Link>
-  <Footer.Link to="/">Products</Footer.Link>
-  <Footer.Link to="/companies">Blog</Footer.Link>
   <Footer.Link href="/contact">Contact</Footer.Link>
 </Footer.LinkGroup>
 

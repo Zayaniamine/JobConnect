@@ -53,7 +53,7 @@ function Home() {
         ))}
       </div>
       <div className="flex justify-center mt-4">
-        <Link to="/jobs" className="btn">View More</Link> {/* Update the Link to route to the correct path */}
+        <Link to="/login" className="btn">View More</Link> {/* Update the Link to route to the correct path */}
       </div>
       <Trusted />
       <NewsLetter/>

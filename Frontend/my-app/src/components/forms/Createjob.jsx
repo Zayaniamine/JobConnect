@@ -8,7 +8,7 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
     const [description, setDescription] = useState('');
     const [positions, setPositions] = useState([{ title: '', content: '', skills: [], jobType: 'in-office', tempSkill: '' }]);
     const [closingDate, setClosingDate] = useState(new Date());
-    const [closingTime, setClosingTime] = useState('17:00');  // Default closing time
+    const [closingTime, setClosingTime] = useState('11:59');  // Default closing time
     const [alert, setAlert] = useState({ show: false, message: '' });
     const modalRef = useRef(null);
 
@@ -90,6 +90,7 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
             })),
             clotureOffre: dateTime.toISOString(),
             disponibilite: true,
+             employerId: sessionStorage.getItem('userId'),
         };
 
         const url = initialData ? `http://localhost:4000/api/jobs/update-joboffer/${initialData._id}` : 'http://localhost:4000/api/jobs/create-job';

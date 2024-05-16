@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const Resume = require('../models/Resume');
 
-// Base User Schema
 const userSchema = new Schema({
     username: {
         type: String,
-       
     },
     email: {
         type: String,
@@ -16,7 +15,6 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-   
     role: {
         type: String,
         required: true,
@@ -26,7 +24,6 @@ const userSchema = new Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Employer Discriminator Schema
 const employerSchema = new Schema({
     companyName: String,
     IndustryField: String,
@@ -41,13 +38,21 @@ const employerSchema = new Schema({
 
 const Employer = User.discriminator('Employer', employerSchema);
 
-// Job Seeker Discriminator Schema
 const jobSeekerSchema = new Schema({
     nom: String,
     prenom: String,
+    jobTitle: String,  // Added jobTitle
+    address: String,   // Added address
     photo: String,
     PhoneNumber: String,
-    preferencesRecherche:[String]
+    preferencesRecherche: [String],
+    resume: {
+        type: Schema.Types.ObjectId,
+        ref: 'Resume'
+    },
+    linkedin: String,
+    github:String
+
 });
 
 const JobSeeker = User.discriminator('JobSeeker', jobSeekerSchema);

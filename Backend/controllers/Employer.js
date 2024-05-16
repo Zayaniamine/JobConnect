@@ -71,3 +71,35 @@ exports.deleteUserProfile = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+exports.getAllEmployers = async (req, res) => {
+    try {
+        const employers = await Employer.find();
+        res.json(employers);
+    } catch (error) {
+        console.error('Error fetching employers:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+exports.getEmployerCount = async (req, res) => {
+    try {
+      const count = await Employer.countDocuments();
+      res.status(200).json({ count });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  exports.getEmployerById = async (req, res) => {
+    try {
+        const employerId = req.params.employerId;
+        const employer = await Employer.findById(employerId);
+        console.log(employer)
+                if (!employer) {
+            return res.status(404).json({ message: 'Employer not found' });
+        }
+        res.json(employer);
+    } catch (error) {
+        console.error('Error fetching employer:', error);
+        res.status(500).json({ message: 'Internal Server Error', error });
+    }
+};

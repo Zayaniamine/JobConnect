@@ -23,7 +23,8 @@ function JobOffers() {
                 // Assuming employer's photo URL is stored similarly to logo
                 const photoUrl = `http://localhost:4000/uploads/${profileData.logoCompany.split('\\').pop()}`;
 
-                const response = await axios.get('http://localhost:4000/api/jobs');
+                const response = await axios.get(`http://localhost:4000/api/jobs/employer/${userId}`);
+
                 const jobOffersData = await Promise.all(response.data.map(async job => {
                     const postsResponse = await axios.get(`http://localhost:4000/api/jobs/${job._id}/posts`);
                     const today = new Date();
@@ -54,6 +55,7 @@ function JobOffers() {
     const handleViewJobPosts = (jobOfferId) => {
         setSelectedJobOffer(jobOfferId);
     };
+    const userId=sessionStorage.getItem("userId")
 
     return (
         <>
@@ -81,13 +83,13 @@ function JobOffers() {
                         </div>
                         <div className="-mt-px flex divide-x divide-gray-200">
                             <div className="flex w-0 flex-1">
-                                <Link to="#" onClick={(e) => { e.preventDefault(); handleViewJobPosts(offer._id); }} className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                <Link to={`/Employer/profile/${userId}`}  className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
                                     <UserCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                                     Company profile
                                 </Link>
                             </div>
                             <div className="-ml-px flex w-0 flex-1">
-                                <button className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900" onClick={() => handleViewJobPosts(offer._id)}>
+                                <button onClick={(e) => { e.preventDefault(); handleViewJobPosts(offer._id); }} className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900" >
                                     <EyeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                                     Details
                                 </button>

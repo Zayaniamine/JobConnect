@@ -7,6 +7,8 @@ import ActivJob from '../components/employer/ActivJob';
 import Applications from '../components/employer/Applications';
 import ProfilePage from '../components/employer/Profile/ProfilePage';
 import EditCompanyProfile from '../components/employer/Profile/EditCompanyProfile';
+import Candidate from '../components/employer/Candidate'
+import EmployerProfiles from '../components/employer/CandidataProfiles/ProfilePage';
 
 function EmployerPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);  // State to manage sidebar visibility
@@ -25,14 +27,17 @@ function EmployerPage() {
       
       <div className='flex-1'> 
 
-        <div className={`ml-${(isSidebarOpen) ? '64' : '0'} p-6 mt-10 overflow-auto`}>
+        <div className={`ml-${(isSidebarOpen) ?  '64' : '0'} p-6 mt-10 overflow-auto`}>
           
           <Routes>
             <Route path="/settings" element={<EditCompanyProfile/>} />
             <Route path={`/profile/${userId}`} element={<ProfilePage />} />
             <Route path="/create-job-offer" element={<Joboffers />} />
+            <Route path="/Candidate" element={<Candidate />} />
             <Route path="/ActiveJobs" element={<ActivJob />} />
             <Route path="/Applications" element={<Applications />} />
+            <Route path="/JobSeeker/profile-page/:userId" element={<EmployerProfiles />} />
+
             {/* Define other nested routes for employer section */}
           </Routes>
         </div>

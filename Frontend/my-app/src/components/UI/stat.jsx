@@ -3,41 +3,59 @@ import axios from 'axios';
 
 function Stat() {
   const [jobPostings, setJobPostings] = useState(0);
-  const [newCandidates, setNewCandidates] = useState(1200);  // Sample starting number
-  const [totalEmployers, setTotalEmployers] = useState(300); // Sample starting number
+  const [newCandidates, setNewCandidates] = useState(0);
+  const [totalEmployers, setTotalEmployers] = useState(0);
+
+  // Baseline values for percentage calculations
+  const baselineCandidates = 1000;
+  const baselineEmployers = 100;
 
   useEffect(() => {
-    const fetchJobPostings = async () => {
+    const fetchStats = async () => {
       try {
-        const { data } = await axios.get('http://localhost:4000/api/jobs/count');
-        setJobPostings(data.count); // assuming the endpoint returns an object with a count property
+        // Fetch job postings count
+        const jobPostingsResponse = await axios.get('http://localhost:4000/api/jobs/count');
+        setJobPostings(jobPostingsResponse.data.count);
+
+        // Fetch job seeker count
+        const jobSeekerResponse = await axios.get('http://localhost:4000/jobseeker/count-jobseeker');
+        setNewCandidates(jobSeekerResponse.data.count);
+
+        // Fetch employer count
+        const employerResponse = await axios.get('http://localhost:4000/Employer/count-employer');
+        setTotalEmployers(employerResponse.data.count);
       } catch (error) {
-        console.error('Failed to fetch job postings:', error);
+        console.error('Failed to fetch statistics:', error);
       }
     };
 
-    fetchJobPostings();
+    fetchStats();
   }, []);
+
+  const calculatePercentageChange = (currentValue, baselineValue) => {
+    if (baselineValue === 0) return 'N/A';
+    return `${Math.floor(((currentValue - baselineValue) / baselineValue) * 100)}%`;
+  };
 
   const stats = [
     {
       id: 1,
       name: 'Total Job Postings',
       value: jobPostings,
-      desc: 'As of today'
+      desc: 'As of today',
     },
     {
       id: 2,
       name: 'New Candidates',
       value: newCandidates,
-      desc: `↗︎ ${Math.floor((newCandidates - 1000) / 1000 * 100)}%`
+      desc: `↗︎ ${calculatePercentageChange(newCandidates, baselineCandidates)}`,
     },
     {
       id: 3,
       name: 'Total Employers',
       value: totalEmployers,
-      desc: `↗︎ ${Math.floor((totalEmployers - 100) / 100 * 100)}%`
-    }
+      desc: `↗︎ ${calculatePercentageChange(totalEmployers, baselineEmployers)}`,
+    },
   ];
 
   return (

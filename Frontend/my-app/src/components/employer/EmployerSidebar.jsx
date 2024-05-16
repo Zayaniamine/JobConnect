@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { HiChartPie, HiViewBoards, HiUserGroup, HiBriefcase, HiCog, HiLogin, HiClipboardList } from 'react-icons/hi';
+import {  HiViewBoards, HiUserGroup, HiBriefcase, HiCog, HiLogin, HiClipboardList } from 'react-icons/hi';
 import { Sidebar } from "flowbite-react";
 import axios from 'axios'; // Correctly imported Axios for fetching data
 
@@ -80,7 +80,7 @@ const EmployerSidebar = () => {
               <Sidebar.Item as={Link} to="/Employer/ActiveJobs">Preview Job Offers</Sidebar.Item>
             </Sidebar.Collapse>
             <Sidebar.Item as={Link} to="/employer/Applications" icon={HiClipboardList}>Manage Applications</Sidebar.Item>
-            <Sidebar.Item as={Link} to="/employer/settings" icon={HiUserGroup}>Candidate Selection</Sidebar.Item>
+            <Sidebar.Item as={Link} to="/employer/Candidate" icon={HiUserGroup}>Candidate Selection</Sidebar.Item>
             <Sidebar.Item as={Link} to="/employer/settings" icon={HiViewBoards}>Analytics</Sidebar.Item>
             <Sidebar.Item as={Link} to="/employer/settings" icon={HiCog}>Settings</Sidebar.Item>
             <hr className='bottom-10' />

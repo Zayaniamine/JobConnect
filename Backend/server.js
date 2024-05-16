@@ -9,6 +9,7 @@ const { loggers,logEvents } = require('./middlewares/loggerReq')
 const errorHandler=require('./middlewares/Errorhandler')
 const authroutes = require('./routes/authroute');
 const employer=require('./routes/Employer')
+const JobSeeker=require('./routes/JobSeeker')
 const jobRoutes = require('./routes/jobRoutes');
 const mongoose = require('mongoose');
 app.use(loggers)
@@ -26,6 +27,7 @@ app.use(errorHandler)
 // Routes
 app.use('/auth', authroutes);
 app.use('/employer', employer);
+app.use('/JobSeeker', JobSeeker);
 app.use('/api/jobs', jobRoutes);
 mongoose.connection.once('open',()=>{
 
