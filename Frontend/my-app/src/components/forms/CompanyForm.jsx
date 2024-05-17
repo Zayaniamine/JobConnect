@@ -1,50 +1,43 @@
 import React, { useState } from 'react';
+
 import { FileInput, Label } from "flowbite-react";
-import Notification from '../UI/notification'; // Assume Notification is correctly imported
 
 function CompanyForm({ onNext, onFormDataChange }) {
   const [formData, setFormData] = useState({
     companyName: '',
     IndustryField: '',
-    PhoneNumber: '',
-    logoCompany: null
+    PhoneNumber:'',
+    logoCompany: null // Integrated logoCompany into the main formData state
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notification, setNotification] = useState({ type: '', message: '' });
   const IndustryFields = ["Technology", "Healthcare", "Finance", "Education", "Manufacturing"];
 
+  // Handle all form data changes including files
+  const handleFormDataChange = (name, value) => {
+    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+    onFormDataChange({ ...formData, [name]: value });
+  };
+
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && !file.type.match('image/png')) {
-      setNotification({ type: 'error', message: 'Only PNG files are allowed!' });
-      setShowNotification(true);
-      return;
-    }
-    setFormData({ ...formData, logoCompany: file });
-    onFormDataChange({ ...formData, logoCompany: file });
+    handleFormDataChange('logoCompany', event.target.files[0]);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    onFormDataChange({ ...formData, [name]: value });
+    handleFormDataChange(name, value);
   };
 
   const handleSectorSelect = (selectedSector) => {
-    setFormData({ ...formData, IndustryField: selectedSector });
+    handleFormDataChange('IndustryField', selectedSector);
     setIsDropdownOpen(false);
-    onFormDataChange({ ...formData, IndustryField: selectedSector });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.companyName || !formData.IndustryField || !formData.PhoneNumber) {
-      setNotification({ type: 'error', message: 'All fields must be filled!' });
-      setShowNotification(true);
-      return;
-    }
-  }
+    onFormDataChange(formData); // Ensures latest formData is used
+    console.log(formData)
+    onNext(); // Proceed to the next step in the UI if necessary
+  };
 
 
   return (
@@ -99,7 +92,6 @@ function CompanyForm({ onNext, onFormDataChange }) {
           </div>
         </div>
       </div>
-      {showNotification && <Notification show={showNotification} message={notification.message} type={notification.type} onClose={() => setShowNotification(false)} />}
     </section>
   );
 }

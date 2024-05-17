@@ -62,21 +62,22 @@ function ResumeForm() {
         languages: [],
         interests: []
     });
-
+    const userId = sessionStorage.getItem('userId');
     useEffect(() => {
-        // Fetch user's resume data when component mounts
+        const fetchResume = async () => {
+            if (!userId) {
+                console.error('User ID is missing, please log in again.');
+                return;
+            }
+            try {
+                const response = await axios.get(`http://localhost:4000/jobSeeker/resume/${userId}`);
+                setResume({ ...response.data.resume });
+            } catch (error) {
+                console.error('Error fetching resume:', error);
+            }
+        };
         fetchResume();
-    }, []);
-
-    const fetchResume = async () => {
-        try {
-            const userId = sessionStorage.getItem('userId');
-            const response = await axios.get(`http://localhost:4000/jobSeeker/resume/${userId}`);
-            setResume(response.data.resume);
-        } catch (error) {
-            console.error('Error fetching resume:', error);
-        }
-    };
+    }, [userId]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -85,54 +86,80 @@ function ResumeForm() {
             [name]: value
         });
     };
-
-    const handleSubmit = async (e) => {
+    const handleUpdate = async (e) => {
         e.preventDefault();
-        const userId = sessionStorage.getItem('userId');
         if (!userId) {
-            alert('User ID is missing, please login again.');
+            console.error('User ID is missing, please log in again.');
             return;
         }
 
-        const data = {
-            userId,
-            resume: { ...resume }
-        };
-
-        console.log("Submitting the following data to the backend:", data);
+        try {
+            await axios.put(`http://localhost:4000/jobSeeker/update-resume/${userId}`, { resume });
+            alert('Resume updated successfully!');
+        } catch (error) {
+            console.error('Error updating resume:', error);
+            alert('Failed to update resume. Please try again.');
+        }
+    };
+    const handleDelete = async () => {
+        if (!userId) {
+            console.error('User ID is missing, please log in again.');
+            return;
+        }
 
         try {
-            const updateResponse = await axios.put(`http://localhost:4000/jobSeeker/update-profile/${userId}`, data);
-            console.log('Resume updated successfully!', updateResponse.data);
-            generatePDF();
+            await axios.delete(`http://localhost:4000/jobSeeker/delete-resume/${userId}`);
+            alert('Resume deleted successfully!');
+            setResume({
+                firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        profileTitle: '',
+        profileDescription: '',
+        experiences: [],
+        education: [],
+        skills: [],
+        languages: [],
+        interests: []
+    });
+     // Resetting resume state after deletion
         } catch (error) {
-            console.error('Error submitting resume:', error);
-            alert('Failed to submit resume.');
+            console.error('Error deleting resume:', error);
+            alert('Failed to delete resume. Please try again.');
         }
     };
 
-    const generatePDF = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!userId) {
+            console.error('User ID is missing, please log in again.');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:4000/jobSeeker/create-pdf', { resume });
-            console.log('PDF generation response:', response.data);
-            if (response.status === 200) {
-                fetchPDF();
-            }
+            await axios.post(`http://localhost:4000/jobSeeker/create-pdf/${userId}`, {
+                userId,
+                resume
+            });
+            fetchPDF(); // Assuming successful PDF creation, we proceed to fetch
         } catch (error) {
             console.error('Error generating PDF:', error);
-            alert('Failed to generate PDF.');
+            alert('Failed to generate PDF. Please try again.');
         }
     };
 
     const fetchPDF = async () => {
         try {
-            const response = await axios.get('http://localhost:4000/jobSeeker/fetch-pdf', {
+            const response = await axios.get(`http://localhost:4000/jobSeeker/fetch-pdf/${userId}`, {
                 responseType: 'blob'
             });
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'Resume.pdf');
+            link.setAttribute('download', `Resume-${userId}.pdf`);
             document.body.appendChild(link);
             link.click();
         } catch (error) {
@@ -142,9 +169,11 @@ function ResumeForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.keys(resume).filter(key => typeof resume[key] === 'string').map(key => (
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 relative rounded-lg shadow">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.keys(resume)
+                    .filter(key => typeof resume[key] === 'string' && key !== '_id' && key !== 'user')
+                    .map(key => (
                     <div key={key} className="flex flex-col">
                         <label htmlFor={key} className="mb-1 text-sm font-medium text-gray-700">
                             {key.replace(/([A-Z])/g, ' $1').trim()}
@@ -214,9 +243,22 @@ function ResumeForm() {
                 items={resume.interests}
                 setItems={(newItems) => setResume({ ...resume, interests: newItems })}
             />
-            <button type="submit" className="mt-4 p-2 bg-[#212e53] text-white rounded hover:bg-blue-800">
+            <button type="submit" className="rounded hover:bg-rounded-md  right-40 bg-[#212e53] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800-800">
+                Download Resume as PDF
+            </button>
+            <button type="button" 
+            onClick={handleUpdate}
+            className="mt-4 p-2 ml-5 absolute rounded-md  right-40 bg-[#212e53] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800">
                 Submit Resume
             </button>
+            <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="rounded-md absolute right-3  bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400"
+                  >
+                     Delete my Resume
+                  </button>
+               
         </form>
     );
 }

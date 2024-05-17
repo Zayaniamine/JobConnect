@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ApplicantsDetails from './Applicantsdetails'; // Ensure this component is set up to handle an `applicant` prop
+import ApplicantsDetails from '../candidate/Applicantsdetails'; // Ensure this component is set up to handle an `applicant` prop
 
 function Applications() {
     const [applications, setApplications] = useState([

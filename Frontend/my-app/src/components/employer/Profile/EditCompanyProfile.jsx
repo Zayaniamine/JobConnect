@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { UserCircleIcon } from '@heroicons/react/solid';
 
 const IndustryFields = ["Technology", "Healthcare", "Finance", "Education", "Manufacturing"];
 
@@ -150,14 +149,7 @@ function EditCompanyProfile() {
                 </select>
               </div>
 
-              <div className="sm:col-span-6">
-                <label htmlFor="logoCompany" className="block text-sm font-medium leading-6 text-gray-900">Logo</label>
-                <div className="mt-2 flex items-center">
-                  <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <input type="file" name="logoCompany" onChange={handleFileChange} className="ml-4 rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"/>
-                </div>
-                {company.imageUrl && <img src={company.imageUrl} alt="Company logo" className="mt-2 rounded-full w-16 h-16 object-cover"/>}
-              </div>
+            
             </div>
           </div>
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">

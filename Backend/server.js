@@ -11,6 +11,7 @@ const authroutes = require('./routes/authroute');
 const employer=require('./routes/Employer')
 const JobSeeker=require('./routes/JobSeeker')
 const jobRoutes = require('./routes/jobRoutes');
+const application = require('./routes/Applications');
 const mongoose = require('mongoose');
 app.use(loggers)
 // Middleware
@@ -22,13 +23,14 @@ app.use(cors());
 connectDB();
 
 app.use('/uploads', express.static(path.join(__dirname, 'config', 'uploads')));
-
+app.use('/uploads', express.static(path.join(__dirname, 'config', 'uploads','Documents')));
 app.use(errorHandler)
 // Routes
 app.use('/auth', authroutes);
 app.use('/employer', employer);
 app.use('/JobSeeker', JobSeeker);
 app.use('/api/jobs', jobRoutes);
+app.use('/application', application);
 mongoose.connection.once('open',()=>{
 
 

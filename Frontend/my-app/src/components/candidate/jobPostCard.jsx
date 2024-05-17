@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import {  CheckCircleIcon, XCircleIcon, BriefcaseIcon, CalendarIcon,ZoomInIcon,OfficeBuildingIcon } from '@heroicons/react/solid';
-
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 function JobPostsCard() {
     const { jobOfferId } = useParams();
     const [posts, setPosts] = useState([]);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchJobs = async () => {
             try {
@@ -24,6 +24,9 @@ function JobPostsCard() {
         };
         fetchJobs();
     }, [jobOfferId]);
+    const handleApply = (postId) => {
+        navigate(`/JobSeeker/view-job-offers/job-posts/${ jobOfferId }/apply/${postId}`);
+    }
 
     return (
         <div className="px-4 sm:px-6 lg:px-8">
@@ -32,7 +35,7 @@ function JobPostsCard() {
                     <div key={post._id} className="bg-white shadow overflow-hidden sm:rounded-lg mb-4 relative">
                         <div className="flex justify-between items-center px-4 py-5 sm:px-6 border-b">
                             <h3 className="text-lg leading-6 font-medium text-gray-900">{post.title}</h3>
-                            <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#212e53] hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <button onClick={() => handleApply(post._id)} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#212e53] hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 Apply
                             </button>
                         </div>

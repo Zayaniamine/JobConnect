@@ -10,6 +10,9 @@ import ProfilePage from '../components/candidate/Profile/ProfilePage'; // Ensure
 import EditCandidate from '../components/candidate/Profile/EditCandidate';
 import EmployerProfiles from '../components/candidate/EmployerProfile/ProfilePage';
 import JobPostsCard from '../components/candidate/jobPostCard';
+import ApplicationForm from '../components/candidate/Application';
+import SubmissionSuccess from '../components/UI/Succes';
+import Applicantsdetails from '../components/candidate/Applicantsdetails';
 function CandidatePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -28,6 +31,7 @@ function CandidatePage() {
       <div className='flex-1'> 
         <div className={`ml-${isSidebarOpen ? '64' : '0'}  p-6 mt-10 overflow-auto`}>
           <Routes>
+          <Route path="/" element={<ProfilePage />} />
             <Route path={`/profile/${userId}`} element={<ProfilePage />} />
             <Route path="/view-job-offers" element={<ViewJobOffers />} />
             <Route path="/create-cv" element={<CreateCV />} />
@@ -36,6 +40,9 @@ function CandidatePage() {
             <Route path="/settings" element={<EditCandidate/>} />
             <Route path="/Employer/profile-page/:userId" element={<EmployerProfiles />} />
             <Route path="/view-job-offers/job-posts/:jobOfferId" element={<JobPostsCard/>} />
+            <Route path="/view-job-offers/job-posts/:jobOfferId/apply/:postId" element={<ApplicationForm/>} />
+             <Route path="/success-page" element={<SubmissionSuccess/>} />
+             <Route path="/job-applications/application-details/:applicationId" element={<Applicantsdetails />} />
           </Routes>
         </div>
       </div>

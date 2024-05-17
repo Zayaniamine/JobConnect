@@ -43,8 +43,8 @@ exports.updateJobSeekerProfile = async (req, res) => {
         // Handle photo upload
         if (req.file) {
             // Remove old photo if it exists and replace it
-            if (jobSeeker.photo && fs.existsSync(`path/to/photos/${jobSeeker.photo}`)) {
-                fs.unlinkSync(`path/to/photos/${jobSeeker.photo}`);
+            if (jobSeeker.photo && fs.existsSync(`../config/uploads/${jobSeeker.photo}`)) {
+                fs.unlinkSync(`../config/uploads/${jobSeeker.photo}`);
             }
             jobSeeker.photo = req.file.filename; // Assuming you're saving the filename, adjust the path handling as needed
         }
@@ -76,7 +76,84 @@ exports.updateJobSeekerProfile = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+// Fetch Job Seeker's Resume
+exports.getJobSeekerResume = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const jobSeeker = await JobSeeker.findById(userId).populate('resume');
+        if (!jobSeeker || !jobSeeker.resume) {
+            return res.status(404).json({ message: 'Resume not found' });
+        }
+        res.status(200).json({ resume: jobSeeker.resume });
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 
+
+exports.updateJobSeekerResume = async (req, res) => {
+    const { userId } = req.params;
+    const { resume: resumeData } = req.body;
+
+    try {
+        const jobSeeker = await JobSeeker.findById(userId).populate('resume');
+        if (!jobSeeker) {
+            return res.status(404).json({ message: 'Job seeker not found' });
+        }
+
+        let resumeDocument = jobSeeker.resume;
+        if (!resumeDocument) {
+            // If no resume exists, create a new one
+            resumeDocument = new Resume({ ...resumeData, user: jobSeeker._id });
+            await resumeDocument.save();
+            jobSeeker.resume = resumeDocument._id;
+        } else {
+            // If resume exists, update it
+            Object.assign(resumeDocument, resumeData);
+            await resumeDocument.save();
+        }
+
+        await jobSeeker.save();
+        res.status(200).json({ message: 'Resume updated successfully', resume: resumeDocument });
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+exports.deleteJobSeekerResume = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const jobSeeker = await JobSeeker.findById(userId).populate('resume');
+        if (!jobSeeker) {
+            return res.status(404).json({ message: 'Job seeker not found' });
+        }
+
+        // Check if the job seeker actually has a resume
+        if (!jobSeeker.resume) {
+            return res.status(404).json({ message: 'No resume found for this job seeker' });
+        }
+
+        // Delete the resume document
+        await Resume.findByIdAndDelete(jobSeeker.resume._id);
+
+        // Remove the resume reference from the job seeker document
+        jobSeeker.resume = null;
+        await jobSeeker.save();
+
+        // Optional: Delete any associated files, if stored on the server
+        const resumeFilePath = path.join(__dirname, `../resumes/Resume-${userId}.pdf`);
+        if (fs.existsSync(resumeFilePath)) {
+            fs.unlinkSync(resumeFilePath);
+        }
+
+        res.status(200).json({ message: 'Resume deleted successfully' });
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 
 exports.deleteJobSeekerProfile = async (req, res) => {
     try {
@@ -103,6 +180,7 @@ exports.createJobSeekerPDF = (req, res) => {
     }
 
     const data = req.body;
+    const userId = data.userId; // Assuming userId is passed in the request body
     const options = {
         format: 'A4',
         orientation: 'portrait',
@@ -122,7 +200,7 @@ exports.createJobSeekerPDF = (req, res) => {
         }
     };
 
-    const pdfPath = path.join(__dirname, '../Resume.pdf');
+    const pdfPath = path.join(__dirname, `../resumes/Resume-${userId}.pdf`); // Unique path for each user
 
     pdf.create(pdfTemplate(data), options).toFile(pdfPath, (err, result) => {
         if (err) {
@@ -138,14 +216,15 @@ exports.createJobSeekerPDF = (req, res) => {
 };
 
 exports.fetchJobSeekerPDF = (req, res) => {
-    const filePath = path.join(__dirname, '../Resume.pdf');
+    const userId = req.params.userId; // Assuming userId is passed as a URL parameter
+    const filePath = path.join(__dirname, `../resumes/Resume-${userId}.pdf`);
     fs.readFile(filePath, (err, data) => {
         if (err) {
             console.error("Error reading PDF file:", err);
             return res.status(500).send("Failed to read PDF file");
         }
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'inline; filename="Resume.pdf"');
+        res.setHeader('Content-Disposition', `inline; filename="Resume-${userId}.pdf"`);
         res.send(data);
     });
 };

@@ -28,11 +28,11 @@ function ProfileCard() {
       .then(data => {
         if (data.resume) {
           setJobSeeker({
-            firstName: data.resume.firstName || '',
-            lastName: data.resume.lastName || '',
-            email: data.resume.email || data.email,
+            firstName: data.prenom || '',
+            lastName: data.nom || '',
+            email: data.email || data.email,
             phoneNumber: data.resume.phoneNumber || data.PhoneNumber,
-            address: data.resume.address || data.address,
+            address:  data.address,
             postalCode: data.resume.postalCode || data.postalCode,
             city: data.resume.city || data.city,
             photo: `http://localhost:4000/uploads/${data.photo ? data.photo.split('\\').pop() : 'default.png'}`,
@@ -40,8 +40,8 @@ function ProfileCard() {
             profileDescription: data.resume.profileDescription || '',
             skills: data.resume.skills || [],
             experiences: data.resume.experiences || [],
-            github: data.resume.github || '',
-            linkedin: data.resume.linkedin || ''
+            github: data.github || '',
+            linkedin: data.linkedin || ''
           });
         } else {
           setJobSeeker({
@@ -76,18 +76,19 @@ function ProfileCard() {
           />
           <div className="flex flex-col justify-center">
             <span className="font-bold text-lg">{`${jobSeeker.firstName} ${jobSeeker.lastName}`}</span>
-            <span className="text-sm text-gray-500">{jobSeeker.profileTitle}</span>
+            <span className="text-sm text-gray-500">{jobSeeker.github}</span>
+
             <div className="flex space-x-2 mt-2">
-              {jobSeeker.github && (
-                <a href={jobSeeker.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                  <FaGithub className="h-6 w-6 text-gray-900" />
-                </a>
-              )}
-              {jobSeeker.linkedin && (
-                <a href={jobSeeker.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                  <FaLinkedin className="h-6 w-6 text-blue-700" />
-                </a>
-              )}
+            {jobSeeker.github && (
+  <a href={jobSeeker.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+    <FaGithub className="h-6 w-6 text-gray-900" />
+  </a>
+)}
+{jobSeeker.linkedin && (
+  <a href={jobSeeker.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+    <FaLinkedin className="h-6 w-6 text-blue-700" />
+  </a>
+)}
             </div>
           </div>
         </div>

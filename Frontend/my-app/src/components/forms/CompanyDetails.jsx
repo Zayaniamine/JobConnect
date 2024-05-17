@@ -1,42 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Notification from '../UI/notification'; // Ensure this is the correct path for the Notification component
-
-function CompanyDetails({ onSubmit, onBack, onFormDataChange }) {
+function CompanyDetails({onSubmit,onBack,onFormDataChange}) {
   const [formData, setFormData] = useState({
+    
     description: '',
     address: '',
     urlSiteWeb: '',
     socialMediaURL: '',
-    companySize: 0
+    companySize:(0)
   });
-  const [showNotification, setShowNotification] = useState(false);
-  const [notification, setNotification] = useState({ type: '', message: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    onFormDataChange({ ...formData, [name]: value });
-  };
-
-  const validateForm = () => {
-    // Example of simple validation
-    if (!formData.description || !formData.address || !formData.urlSiteWeb || !formData.socialMediaURL || formData.companySize <= 0) {
-      setNotification({ type: 'error', message: 'Please fill in all fields correctly.' });
-      setShowNotification(true);
-      return false;
-    }
-    return true;
+      const { name, value } = e.target;
+      const updatedFormData = { ...formData, [name]: value };
+      setFormData(updatedFormData);
+      onFormDataChange(updatedFormData); // Pass updated form data to parent component
+   
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
     onSubmit(formData);
     navigate('/employer');
-    setShowNotification(true);
-    setNotification({ type: 'success', message: 'Details submitted successfully!' });
+    console.log(formData)
+    
   };
      
   // Assuming onSubmit expects the form data as an argument
@@ -99,7 +87,6 @@ function CompanyDetails({ onSubmit, onBack, onFormDataChange }) {
           </div>
         </div>
       </div>
-      {showNotification && <Notification show={showNotification} message={notification.message} type={notification.type} onClose={() => setShowNotification(false)} />}
     </section>
   );
 }
