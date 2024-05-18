@@ -9,7 +9,7 @@ function EditCompanyProfile() {
     password: '',
     companyName: '',
     address: '',
-    phoneNumber: '',
+    PhoneNumber: '',
     companySize: '',
     description: '',
     logoCompany: null,
@@ -105,7 +105,7 @@ function EditCompanyProfile() {
 
               <div className="sm:col-span-6">
                 <label htmlFor="phoneNumber" className="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
-                <input type="text" name="phoneNumber" id="phoneNumber" value={company.phoneNumber} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+                <input type="text" name="phoneNumber" id="phoneNumber" value={company.PhoneNumber} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
               </div>
 
               <div className="sm:col-span-6">

@@ -6,8 +6,8 @@ const PostSchema = new mongoose.Schema({
   skills: [{ type: String }],
   jobType: { type: String, enum: ['in-office', 'remote', 'hybrid'], required: true },
   clotureOffre: { type: Date, required: true },
-  dateDeCreation: { type: Date, default: Date.now },
-});
+  dateDeCreation: { type: Date, default: Date.now }, 
+}, { _id: true });
 
 const JobOfferSchema = new mongoose.Schema({
   titre: { type: String, required: true },

@@ -36,7 +36,7 @@ function ProfileCard() {
             postalCode: data.resume.postalCode || data.postalCode,
             city: data.resume.city || data.city,
             photo: `http://localhost:4000/uploads/${data.photo ? data.photo.split('\\').pop() : 'default.png'}`,
-            profileTitle: data.resume.profileTitle || '',
+            profileTitle: data.resume.profileTitle || data.jobTitle,
             profileDescription: data.resume.profileDescription || '',
             skills: data.resume.skills || [],
             experiences: data.resume.experiences || [],
@@ -45,16 +45,16 @@ function ProfileCard() {
           });
         } else {
           setJobSeeker({
-            firstName: data.nom || '',
-            lastName: data.prenom || '',
-            email: data.email || '',
-            phoneNumber: data.PhoneNumber || '',
-            address: data.address || '',
-            postalCode: data.postalCode || '',
-            city: data.city || '',
+            firstName: data.nom || ' ',
+            lastName: data.prenom || ' ',
+            email: data.email || ' ',
+            phoneNumber: data.PhoneNumber || ' ',
+            address: data.address || ' ',
+            postalCode: data.postalCode || ' ',
+            city: data.city || ' ',
             photo: `http://localhost:4000/uploads/${data.photo ? data.photo.split('\\').pop() : 'default.png'}`,
             profileTitle: '',
-            profileDescription: '',
+            profileDescription: ' ',
             skills: [],
             experiences: [],
             github: data.github || '',
@@ -76,7 +76,7 @@ function ProfileCard() {
           />
           <div className="flex flex-col justify-center">
             <span className="font-bold text-lg">{`${jobSeeker.firstName} ${jobSeeker.lastName}`}</span>
-            <span className="text-sm text-gray-500">{jobSeeker.github}</span>
+            <span className="text-sm text-gray-500">{jobSeeker.profileTitle}</span>
 
             <div className="flex space-x-2 mt-2">
             {jobSeeker.github && (
@@ -92,10 +92,7 @@ function ProfileCard() {
             </div>
           </div>
         </div>
-        <div className="mb-2 text-sm font-normal">
-          <MapPinIcon className="h-5 w-5 inline mr-2" aria-hidden="true" />
-          <span className="font-semibold">Location:</span> {`${jobSeeker.address}, ${jobSeeker.city}, ${jobSeeker.postalCode}`}
-        </div>
+       
         <div className="mb-2 text-sm font-normal">
           <EnvelopeIcon className="h-5 w-5 inline mr-2" aria-hidden="true" />
           <span className="font-semibold">Email:</span> {jobSeeker.email}

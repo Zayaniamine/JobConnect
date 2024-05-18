@@ -39,30 +39,31 @@ export default function CandidateDetails({ userId }) {
   }, [userId]);
 
   const viewPDF = () => {
-    fetch('http://localhost:4000/jobSeeker/fetch-pdf')
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Resume.pdf');
-        document.body.appendChild(link);
-        link.click();
-      })
+    fetch(`http://localhost:4000/jobSeeker/fetch-pdf/${userId}`)
+    .then(response => response.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Resume-${userId}.pdf`); // Naming the file uniquely per user
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link); // Clean up after download
+    })
       .catch(error => console.error('Error fetching PDF:', error));
   };
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg w-[70%]">
       <div className="px-4 py-6 sm:px-6 flex justify-between items-center">
-        <div>
+        <div className='w-[80%]'>
           <h3 className="text-base font-semibold leading-7 text-gray-900">Candidate Information</h3>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">{jobSeeker.profileDescription}</p>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500 ">{jobSeeker.profileDescription}</p>
         </div>
         <div className="flex space-x-4">
           <button 
             onClick={viewPDF} 
-            className="px-4 py-2 bg-white text-black  rounded-md  hover:bg-gray-100"
+            className="px-4 py-2 bg-white text-black  rounded-md   hover:bg-gray-100"
           >
             View CV as PDF
           </button>

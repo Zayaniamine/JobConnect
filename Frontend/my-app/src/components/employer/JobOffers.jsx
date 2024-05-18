@@ -65,7 +65,7 @@ function JobOffers() {
       toggleForm();
     } catch (error) {
       console.error('Failed to save job offer:', error);
-      displayToast('Failed to save job offer.', 'error');
+     
     }
   };
 
@@ -107,7 +107,7 @@ function JobOffers() {
         </button>
       </div>
       
-      <ul  className="divide-y divide-gray-100">
+      <ul  className="divide-y h-screen divide-gray-100">
         {jobOffers.map((offer, index) => (
           <li key={offer._id}  className="flex items-center justify-between gap-x-6 py-5">
             <div className="min-w-0">

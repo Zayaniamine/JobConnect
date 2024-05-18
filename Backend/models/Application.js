@@ -46,7 +46,7 @@ const applicationSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['in progress', 'accepted', 'rejected'],
+        enum: ['in progress', 'accepted', 'rejected','archived'],
         default: 'in progress'
     },
     appliedOn: {

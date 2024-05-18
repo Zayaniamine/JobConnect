@@ -9,6 +9,7 @@ import ProfilePage from '../components/employer/Profile/ProfilePage';
 import EditCompanyProfile from '../components/employer/Profile/EditCompanyProfile';
 import Candidate from '../components/employer/Candidate'
 import EmployerProfiles from '../components/employer/CandidataProfiles/ProfilePage';
+import ApplicantsDetails from '../components/employer/Application details';
 
 function EmployerPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);  // State to manage sidebar visibility
@@ -37,7 +38,7 @@ function EmployerPage() {
             <Route path="/ActiveJobs" element={<ActivJob />} />
             <Route path="/Applications" element={<Applications />} />
             <Route path="/JobSeeker/profile-page/:userId" element={<EmployerProfiles />} />
-
+            <Route path="/Applications/application-details/:applicationId" element={<ApplicantsDetails /> } />
             {/* Define other nested routes for employer section */}
           </Routes>
         </div>

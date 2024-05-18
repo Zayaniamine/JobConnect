@@ -1,4 +1,4 @@
-const { JobOffer, JobPosition } = require('../models/JobOffers');
+const { JobOffer, JobPosition } = require('../models/joboffers');
 
 exports.createJob = async (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));  // Log received data

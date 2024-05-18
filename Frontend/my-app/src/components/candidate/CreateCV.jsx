@@ -62,6 +62,7 @@ function ResumeForm() {
         languages: [],
         interests: []
     });
+    
     const userId = sessionStorage.getItem('userId');
     useEffect(() => {
         const fetchResume = async () => {
@@ -171,10 +172,10 @@ function ResumeForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 relative rounded-lg shadow">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.keys(resume)
-                    .filter(key => typeof resume[key] === 'string' && key !== '_id' && key !== 'user')
-                    .map(key => (
-                    <div key={key} className="flex flex-col">
+           {Object.keys(resume)
+    .filter(key => typeof resume[key] === 'string' && key !== '_id' && key !== 'user')
+    .map(key => (
+        <div key={key} className="flex flex-col">
                         <label htmlFor={key} className="mb-1 text-sm font-medium text-gray-700">
                             {key.replace(/([A-Z])/g, ' $1').trim()}
                         </label>

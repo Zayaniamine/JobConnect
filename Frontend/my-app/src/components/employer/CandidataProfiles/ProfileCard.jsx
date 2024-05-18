@@ -27,15 +27,15 @@ function ProfileCard({ userId }) {
       .then(data => {
         if (data.resume) {
           setJobSeeker({
-            firstName: data.resume.firstName || '',
-            lastName: data.resume.lastName || '',
-            email: data.resume.email || data.email,
+            firstName: data.prenom || '',
+            lastName: data.nom || '',
+            email: data.email || data.email,
             phoneNumber: data.resume.phoneNumber || data.PhoneNumber,
             address: data.resume.address || data.address,
             postalCode: data.resume.postalCode || data.postalCode,
             city: data.resume.city || data.city,
             photo: `http://localhost:4000/uploads/${data.photo ? data.photo.split('\\').pop() : 'default.png'}`,
-            profileTitle: data.resume.profileTitle || '',
+            profileTitle: data.jobTitle || '',
             profileDescription: data.resume.profileDescription || '',
             skills: data.resume.skills || [],
             experiences: data.resume.experiences || [],
@@ -90,10 +90,7 @@ function ProfileCard({ userId }) {
             </div>
           </div>
         </div>
-        <div className="mb-2 text-sm font-normal">
-          <MapPinIcon className="h-5 w-5 inline mr-2" aria-hidden="true" />
-          <span className="font-semibold">Location:</span> {`${jobSeeker.address}, ${jobSeeker.city}, ${jobSeeker.postalCode}`}
-        </div>
+       
         <div className="mb-2 text-sm font-normal">
           <EnvelopeIcon className="h-5 w-5 inline mr-2" aria-hidden="true" />
           <span className="font-semibold">Email:</span> {jobSeeker.email}

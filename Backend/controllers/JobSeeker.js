@@ -197,6 +197,12 @@ exports.createJobSeekerPDF = (req, res) => {
                 default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>',
                 last: 'Last Page'
             }
+        },
+        // Specify the path to the wkhtmltopdf binary
+        childProcessOptions: {
+            env: {
+                PATH: process.env.PATH + ';"C:\\Program Files\\wkhtmltopdf\\bin"'
+            }
         }
     };
 

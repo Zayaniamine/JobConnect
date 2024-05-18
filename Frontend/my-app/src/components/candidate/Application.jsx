@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DocumentTextIcon, PaperClipIcon } from '@heroicons/react/solid';
 import { useParams, useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../UI/loading';
 
 function ApplicationForm() {
     const { jobOfferId, postId } = useParams();
@@ -18,7 +19,8 @@ function ApplicationForm() {
         motivationLetterFile: null,
         resumeFile: null
     });
-
+    const [isLoading, setIsLoading] = useState(true); // State to manage loading spinner
+    const [isSubmitting, setIsSubmitting] = useState(false);
     useEffect(() => {
         const userId = sessionStorage.getItem('userId');
         if (userId) {
@@ -34,8 +36,10 @@ function ApplicationForm() {
                         email: data.email || '',
                         jobSeekerId: userId // Adding jobSeekerId from session storage
                     }));
+                    setIsLoading(false);
                 })
                 .catch(error => console.error('Failed to fetch data:', error));
+                setIsLoading(false);
         }
     }, [jobOfferId, postId]);
 
@@ -50,6 +54,7 @@ function ApplicationForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsSubmitting(true);
         const applicationData = new FormData();
         Object.keys(formData).forEach(key => {
             if (formData[key] != null) {
@@ -67,15 +72,21 @@ function ApplicationForm() {
                 }
             });
             console.log('Submission result:', response.data);
-            alert('Application submitted successfully!');
-            navigate('/JobSeeker/success-page'); // Redirect after successful submission
+           
+            setTimeout(() => {
+                navigate('/JobSeeker/success-page'); // Redirect after a delay
+            }, 4000); // 4000 milliseconds = 4 seconds delay
         } catch (error) {
             console.error('Failed to submit application:', error);
             alert('Failed to submit application.');
+            setIsSubmitting(false); // Set submitting to false in case of error
         }
     };
+    if (isLoading || isSubmitting) {
+        return <LoadingSpinner />;
+    }
     return (
-        <form className="space-y-8 divide-y divide-gray-300" onSubmit={handleSubmit}>
+        <form className=" divide-gray-300" onSubmit={handleSubmit}>
             <div className="space-y-8 divide-y divide-gray-300 sm:space-y-5">
                 <div>
                     <h3 className="text-lg font-medium leading-6 text-gray-900">Job Application</h3>
@@ -137,13 +148,14 @@ function ApplicationForm() {
 
                     <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                         <label htmlFor="salary-expectations" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            Salary Expectations
+                            Salary Expectations (TND)
+                            
                         </label>
                         <div className="mt-1 sm:mt-0 sm:col-span-2">
                             <input
                                 id="salary-expectations"
                                 name="salaryExpectations"
-                                type="text"
+                                type='number'
                                 autoComplete="salary"
                                 value={formData.salaryExpectations}
                                 onChange={handleInputChange}
