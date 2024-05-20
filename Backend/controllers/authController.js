@@ -86,9 +86,7 @@ const registerUser = async (req, res) => {
 const loginAttempts = {}; // Pour suivre les tentatives de connexion infructueuses
 let lockedAccounts = {}; // Pour suivre les comptes bloqués
 
-let MAX_LOGIN_ATTEMPTS = 10; // Nombre maximal de tentatives de connexion avant de bloquer le compte
-let LOCK_TIME = 2.5 * 60 * 1000; // Durée de blocage initiale du compte en millisecondes (5 minutes)
-let MAX_LOCK_TIME = 45 * 60 * 1000; // Durée maximale de blocage du compte en millisecondes (45 minutes)
+
 
 const login = async (req, res) => {
     try {
@@ -112,19 +110,28 @@ const login = async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(password, user.password);
 
+        const MAX_LOGIN_ATTEMPTS = 5;      // Maximum allowed login attempts before locking the account
+        const INITIAL_LOCK_TIME = 30000;   // Initial lock time in milliseconds (e.g., 30 seconds)
+        const MAX_LOCK_TIME = 3600000;     // Maximum lock time in milliseconds (e.g., 1 hour)
+        let LOCK_TIME = INITIAL_LOCK_TIME; // Current lock time (starts with the initial lock time)
+        
+        const loginAttempts = {};          // Store login attempts per email
+        const lockedAccounts = {};         // Store lock time per email
+        
         if (!passwordMatch) {
-            // Incrémenter le compteur de tentatives de connexion infructueuses
+            // Increment the login attempt counter
             loginAttempts[email] = (loginAttempts[email] || 0) + 1;
-
+        
+            // Check if the account should be locked
             if (loginAttempts[email] >= MAX_LOGIN_ATTEMPTS) {
-                // Doubler le temps de blocage et réinitialiser le compteur de tentatives de connexion
+                // Check if the account has reached maximum lock time
                 if (LOCK_TIME < MAX_LOCK_TIME) {
-                    LOCK_TIME = LOCK_TIME * 2;
+                    LOCK_TIME = Math.min(LOCK_TIME * 2, MAX_LOCK_TIME); // Ensure lock time does not exceed MAX_LOCK_TIME
                     lockedAccounts[email] = new Date().getTime() + LOCK_TIME;
                     delete loginAttempts[email];
-    
+        
                     return res.json({
-                        error: `Too many unsuccessful login attempts. Account locked for ${LOCK_TIME / 1000} seconds after next unsuccessful attempt`
+                        error: `Too many unsuccessful login attempts. Account locked for ${LOCK_TIME / 1000} seconds`
                     });
                 } else {
                     lockedAccounts[email] = 'permanently';
@@ -134,32 +141,35 @@ const login = async (req, res) => {
                     });
                 }
             }
+        
+            // Check if the account is already locked
             if (lockedAccounts[email]) {
                 const now = new Date().getTime();
-                if (now < lockedAccounts[email]) {
+                if (lockedAccounts[email] === 'permanently') {
+                    return res.json({
+                        error: 'Your account is locked permanently'
+                    });
+                } else if (now < lockedAccounts[email]) {
                     const timeLeft = Math.ceil((lockedAccounts[email] - now) / 1000);
                     return res.json({
                         error: `Account locked. Please try again in ${timeLeft} seconds`
                     });
-                } else if (lockedAccounts[email] === 'permanently') {
-                    return res.json({
-                        error: 'Your account is locked permanently'
-                    });
                 } else {
-                    delete lockedAccounts[email];
-                    delete loginAttempts[email];
+                    delete lockedAccounts[email]; // Unlock the account if the lock time has passed
+                    delete loginAttempts[email];  // Reset the login attempt counter
                 }
             }
-
+        
             return res.json({
                 error: 'Invalid password'
             });
         }
         
-
-        // Réinitialiser le compteur de tentatives de connexion infructueuses
+        // Reset the login attempt counter and lock time on successful login
         delete loginAttempts[email];
-        logger.info(`User logged in: ${email}`); // Enregistrement de la connexion de l'utilisateur
+        delete lockedAccounts[email];
+        LOCK_TIME = INITIAL_LOCK_TIME; // Reset the lock time to the initial value
+        logger.info(`User logged in: ${email}`); // Log the successful login
 
         // Authentification réussie
         const token = jwt.sign({ userId: user._id , username : user.username , userEmail : user.email , userPassword : user.password }, secretKey, { expiresIn: '1h' });

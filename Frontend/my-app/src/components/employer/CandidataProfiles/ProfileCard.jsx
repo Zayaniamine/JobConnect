@@ -109,7 +109,7 @@ function ProfileCard({ userId }) {
         </div>
         <div className="mt-4">
           <h2 className="text-lg font-semibold">Skills</h2>
-          <ul className="list-disc pl-5">
+          <ul className="list-disc pl-5 ">
             {jobSeeker.skills.length > 0 ? (
               jobSeeker.skills.map((skill, index) => (
                 <li key={index} className="text-sm break-words">{`${skill.skillName} - ${skill.proficiency}`}</li>

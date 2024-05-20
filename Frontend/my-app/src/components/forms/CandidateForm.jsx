@@ -2,7 +2,6 @@ import { useState } from 'react';
 import axios from 'axios';
 import { FileInput, Label } from "flowbite-react";
 import { useNavigate } from 'react-router-dom';
-import Notification from '../UI/notification'
 
 function CandidateForm() {
   const [preferencesRecherche, setPreferencesRecherche] = useState([]);
@@ -17,8 +16,6 @@ function CandidateForm() {
     github: '',
     linkedin: ''
   });
-  const [showNotification, setShowNotification] = useState(false);
-  const [notification, setNotification] = useState({ type: '', message: '' });
 
   const navigate = useNavigate();
 
@@ -44,11 +41,8 @@ function CandidateForm() {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file.type !== "image/png") {
-      setShowNotification(true);
-      setNotification({ type: 'error', message: 'Only PNG files are allowed!' });
-      return;
-    }
+  
+   
     setCandidateInfo(prev => ({
       ...prev,
       photo: file
@@ -84,8 +78,6 @@ function CandidateForm() {
       navigate('/JobSeeker');
     } catch (error) {
       console.error('Error submitting form:', error);
-      setShowNotification(true);
-      setNotification({ type: 'error', message: 'Failed to submit the form. Please try again.' });
     }
   };
 
@@ -175,8 +167,7 @@ function CandidateForm() {
             </div>
           </form>
         </div>
-      </div>
-      {showNotification && <Notification show={showNotification} message={notification.message} type={notification.type} onClose={() => setShowNotification(false)} />}
+      </div> 
     </section>
   );
 }

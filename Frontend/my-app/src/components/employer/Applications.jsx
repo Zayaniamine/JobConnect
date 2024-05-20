@@ -36,16 +36,23 @@ function Applications() {
         }
     };
 
-    const handleReject = applicationId => handleStatusChange(applicationId, 'rejected');
+    const handleReject = async (applicationId) => {
+        try {
+            setApplications(applications.filter(app => app._id !== applicationId));
+        } catch (error) {
+            console.error('Error deleting application:', error);
+        }
+    };
+
     const handleAccept = applicationId => handleStatusChange(applicationId, 'accepted');
     const handleArchive = applicationId => handleStatusChange(applicationId, 'archived');
 
     return (
         <div className="space-y-8 h-screen">
             <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between pt-2">
-                <h3 className="text-lg font-semibold text-gray-900">Manage Applications </h3>
+                <h3 className="text-lg font-semibold text-gray-900">Manage Applications</h3>
             </div>
-            <div className="space-y-6 ">
+            <div className="space-y-6">
                 {applications.map(application => (
                     <div key={application._id} className="md:flex md:items-center md:justify-between md:space-x-5 bg-white p-4 rounded-lg shadow">
                         <div className="flex items-start space-x-5">

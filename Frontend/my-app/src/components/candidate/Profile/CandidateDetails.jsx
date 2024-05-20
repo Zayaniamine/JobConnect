@@ -9,7 +9,7 @@ export default function CandidateDetails() {
     phoneNumber: '',
     address: '',
     photo: '',
-    profileTitle: '',
+    jobTitle: '',
     profileDescription: '',
     skills: [],
     experiences: [],
@@ -29,7 +29,7 @@ export default function CandidateDetails() {
         phoneNumber: data.PhoneNumber,
         address: data.address,
         photo: `http://localhost:4000/uploads/${data.photo ? data.photo.split('\\').pop() : 'default.png'}`, // Assuming a default image
-        profileTitle: data.resume ? data.resume.profileTitle : '',
+        jobTitle: data.jobTitle ? data.jobTitle : data.resume.profileTitle,
         profileDescription: data.resume ? data.resume.profileDescription : '',
         skills: data.resume ? data.resume.skills || [] : [],
         experiences: data.resume ? data.resume.experiences || [] : [],

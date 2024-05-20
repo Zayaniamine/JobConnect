@@ -82,7 +82,7 @@ export function FeaturedCompanies() {
                   <dd className="text-sm text-gray-500">{company.description}</dd>
                   <dt className="sr-only">Industry</dt>
                   <dd className="mt-3">
-                    <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                    <span className="inline-flex items-center rounded-full gray px-2 py-1 text-xs font-medium text-gray ring-1 ring-inset ring-gray-100">
                       {company.IndustryField}
                     </span>
                   </dd>

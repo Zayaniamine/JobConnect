@@ -4,7 +4,7 @@ const PostSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   skills: [{ type: String }],
-  jobType: { type: String, enum: ['in-office', 'remote', 'hybrid'], required: true },
+  jobType: { type: String, enum: ['In-office', 'Remote', 'Hybrid'], required: true },
   clotureOffre: { type: Date, required: true },
   dateDeCreation: { type: Date, default: Date.now }, 
 }, { _id: true });

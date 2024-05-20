@@ -29,7 +29,7 @@ function CandidatePage() {
       </div>
       
       <div className='flex-1'> 
-        <div className={`ml-${isSidebarOpen ? '64' : '0'}  p-6 mt-10 overflow-auto`}>
+        <div className={`ml-${isSidebarOpen ? '64' : '0'}  ml-64 p-6 mt-10 overflow-auto`}>
           <Routes>
           <Route path="/" element={<ProfilePage />} />
             <Route path={`/profile/${userId}`} element={<ProfilePage />} />

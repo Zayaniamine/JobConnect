@@ -18,7 +18,7 @@ router.get('/resume/:userId', jobSeekerController.getJobSeekerResume);
 router.get('/employers', getAllEmployers);
 router.get('/count-jobseeker', jobSeekerController.getJobseekerCount);
 router.get('/employers/:employerId', getEmployerById);
-
+router.post('/matching-score/:jobOfferId/:userId', jobSeekerController.MatchingScore);
 
 module.exports = router;
 

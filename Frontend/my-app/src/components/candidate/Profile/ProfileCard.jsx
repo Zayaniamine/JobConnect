@@ -53,7 +53,7 @@ function ProfileCard() {
             postalCode: data.postalCode || ' ',
             city: data.city || ' ',
             photo: `http://localhost:4000/uploads/${data.photo ? data.photo.split('\\').pop() : 'default.png'}`,
-            profileTitle: '',
+            profileTitle: data.jobTitle,
             profileDescription: ' ',
             skills: [],
             experiences: [],

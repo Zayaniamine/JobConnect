@@ -5,11 +5,13 @@ const fs = require('fs');
 const pdf = require("html-pdf");
 const pdfTemplate = require("../ResumeSample"); // Ensure you have this template
 const path = require('path');
+const { JobOffer, JobPosition } = require('../models/joboffers');
 
 
 exports.getJobSeekerProfile = async (req, res) => {
     try {
         const jobSeeker = await JobSeeker.findById(req.params.userId).populate('resume');
+        console.log(jobSeeker)
         if (!jobSeeker) {
             return res.status(404).json({ message: 'Job seeker not found' });
         }
@@ -251,5 +253,104 @@ exports.getJobseekerCount = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+  exports.MatchingScore = async (req, res) => {
+    const { jobOfferId, jobSeekerId } = req.params;
+    try {
+
+        // Find the job offer
+        const jobOffer = await JobOffer.findById(jobOfferId);
+
+        if (!jobOffer) {
+            return res.status(404).json({ error: { code: 'JOB_OFFER_NOT_FOUND', message: 'Job offer not found' } });
+        }
+
+        // Find the job seeker's resume
+        const resume = await Resume.findOne({ user: jobSeekerId });
+        const jobSeeker = await JobSeeker.findOne({ jobSeekerId });
+
+        if (!resume) {
+            return res.status(404).json({ error: { code: 'RESUME_NOT_FOUND', message: 'Resume not found' } });
+        }
+
+        if (!jobSeeker) {
+            return res.status(404).json({ error: { code: 'JOB_SEEKER_NOT_FOUND', message: 'Job seeker not found' } });
+        }
+
+        // Initialize matching score
+        let matchingScore = 0;
+
+        // Weight for job title match
+        
+        if (jobOffer.title == resume.jobTitle) {
+            matchingScore += 10;
+        }
+
+        // Weight for address match
+        if (jobOffer.address == resume.address) {
+            matchingScore += 10;
+        }
+
+        // Weight for skills match
+        const jobOfferSkills = jobOffer.posts.flatMap(post => post.skills);
+        const resumeSkills = resume.skills.map(skill => skill.skillName);
+        const skillMatchCount = jobOfferSkills.filter(skill => resumeSkills.includes(skill)).length;
+        matchingScore += (skillMatchCount / jobOfferSkills.length) * 30;
+
+        // Weight for job positions match
+        const positionMatchCount = jobOffer.posts.filter(post =>
+            resume.experiences.some(exp =>
+                exp.jobTitle === post.title && exp.description === post.content
+            )
+        ).length;
+        matchingScore += (positionMatchCount / jobOffer.posts.length) * 20;
+
+        // Compare job seeker's preferencesRecherche with job offer's title and description
+        jobSeeker.preferencesRecherche.flatMap(preference => {
+            if (jobOffer.titre.includes(preference)) {
+                matchingScore += 2;
+            }
+            if (jobOffer.description.includes(preference)) {
+                matchingScore += 1;
+            }
+        });
+
+        // Compare job seeker's preferencesRecherche with job offer's jobType
+        jobSeeker.preferencesRecherche.forEach(preference => {
+            if (jobOffer.posts.jobType === preference) {
+                matchingScore += 2;
+            }
+        });
+
+        // Compare job seeker's preferencesRecherche with job offer's posts' titles
+        jobOffer.posts.forEach(post => {
+            jobSeeker.preferencesRecherche.forEach(preference => {
+                if (post.title.includes(preference)) {
+                    matchingScore += 2;
+                }
+            });
+        });
+
+        // Compare job seeker's preferencesRecherche with job offer's posts' jobTypes
+        jobOffer.posts.forEach(post => {
+            
+            jobSeeker.preferencesRecherche.forEach(preference => {
+                
+                if (post.jobType === preference) {
+                    matchingScore += 1;
+                    console.log(matchingScore)
+                }
+            });
+        });
+
+        // Add more comparisons for other fields if needed
+
+        res.json({ matchingScore });
+    } catch (error) {
+        console.error('Error calculating matching score:', error.message);
+        return res.status(500).json({ error: { code: 'INTERNAL_SERVER_ERROR', message: 'An internal server error occurred' } });
+    }
+};
+
+
 
   

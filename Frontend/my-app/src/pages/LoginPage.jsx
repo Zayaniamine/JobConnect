@@ -32,7 +32,7 @@ const LoginPage = () => {
         if (userRole === 'Employer') {
           navigate('/employer');
         } else {
-          navigate('/jobSeeker');
+          navigate('/JobSeeker');
         }
       }
     } catch (error) {
