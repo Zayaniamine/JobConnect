@@ -16,7 +16,7 @@ function EditCompanyProfile() {
     imageUrl: 'https://via.placeholder.com/150',
     socialMediaURL: '',
     urlSiteWeb: '',
-    industryField: ''
+    IndustryField: ''
   });
 
   useEffect(() => {
@@ -136,9 +136,9 @@ function EditCompanyProfile() {
               <div className="sm:col-span-6">
                 <label htmlFor="industryField" className="block text-sm font-medium leading-6 text-gray-900">Industry Field</label>
                 <select 
-                  name="industryField" 
-                  id="industryField" 
-                  value={company.industryField} 
+                  name="IndustryField" 
+                  id="IndustryField" 
+                  value={company.IndustryField} 
                   onChange={handleChange} 
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 >

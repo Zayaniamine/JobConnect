@@ -1,4 +1,4 @@
-const { User, JobSeeker } = require('../models/User'); // Correct the import path
+const { User, JobSeeker ,Employer} = require('../models/User'); // Correct the import path
 const Resume = require('../models/Resume');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
@@ -6,7 +6,8 @@ const pdf = require("html-pdf");
 const pdfTemplate = require("../ResumeSample"); // Ensure you have this template
 const path = require('path');
 const { JobOffer, JobPosition } = require('../models/joboffers');
-
+const phantomPath = require('phantomjs-prebuilt').path;
+const fuzzysort = require('fuzzysort');
 
 exports.getJobSeekerProfile = async (req, res) => {
     try {
@@ -185,20 +186,15 @@ exports.createJobSeekerPDF = (req, res) => {
     const userId = data.userId; // Assuming userId is passed in the request body
     const options = {
         format: 'A4',
+        phantomPath: phantomPath,
         orientation: 'portrait',
         border: '10mm',
         header: {
             height: '20mm',
-            contents: `<div style="text-align: center;">${data.resume.firstName} ${data.resume.lastName}'s Resume</div>`
         },
         footer: {
             height: '20mm',
-            contents: {
-                first: ' ',
-                2: 'Second page',
-                default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>',
-                last: 'Last Page'
-            }
+        
         },
         // Specify the path to the wkhtmltopdf binary
         childProcessOptions: {
@@ -253,104 +249,90 @@ exports.getJobseekerCount = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+
   exports.MatchingScore = async (req, res) => {
     const { jobOfferId, jobSeekerId } = req.params;
     try {
-
-        // Find the job offer
-        const jobOffer = await JobOffer.findById(jobOfferId);
+        // Trouver l'offre d'emploi
+        const jobOffer = await JobOffer.findById(jobOfferId).populate('employerId');
 
         if (!jobOffer) {
-            return res.status(404).json({ error: { code: 'JOB_OFFER_NOT_FOUND', message: 'Job offer not found' } });
+            return res.status(404).json({ errorCode: 404, errorMessage: 'Job offer not found' });
         }
 
-        // Find the job seeker's resume
+        // Trouver le CV du chercheur d'emploi
         const resume = await Resume.findOne({ user: jobSeekerId });
-        const jobSeeker = await JobSeeker.findOne({ jobSeekerId });
+        const jobSeeker = await JobSeeker.findById(jobSeekerId);
 
-        if (!resume) {
-            return res.status(404).json({ error: { code: 'RESUME_NOT_FOUND', message: 'Resume not found' } });
+        if (!resume || !jobSeeker) {
+            return res.status(404).json({ errorCode: 404, errorMessage: 'Resume or Job seeker not found' });
         }
 
-        if (!jobSeeker) {
-            return res.status(404).json({ error: { code: 'JOB_SEEKER_NOT_FOUND', message: 'Job seeker not found' } });
-        }
+        // Initialiser le score de correspondance
+        let overallMatchingScore = 0;
+        let matchingScores = [];
 
-        // Initialize matching score
-        let matchingScore = 0;
+        for (const post of jobOffer.posts) {
+            let matchingScore = 0;
 
-        // Weight for job title match
-        
-        if (jobOffer.title == resume.jobTitle) {
-            matchingScore += 10;
-        }
+            // Définir les poids maximaux pour chaque critère
+            const maxTitleWeight = 30;
+            const maxAddressWeight = 5;
+            const maxSkillsWeight = 60;
+            const maxJobTitleWeight = 20;
+            const maxIndustryFieldWeight = 10;
+            const totalMaxScore = maxTitleWeight + maxAddressWeight + maxSkillsWeight + maxJobTitleWeight + maxIndustryFieldWeight;
 
-        // Weight for address match
-        if (jobOffer.address == resume.address) {
-            matchingScore += 10;
-        }
+            // Nettoyer preferencesRecherche
+            const cleanedPreferences = jobSeeker.preferencesRecherche.map(preference => preference.trim().toLowerCase());
 
-        // Weight for skills match
-        const jobOfferSkills = jobOffer.posts.flatMap(post => post.skills);
-        const resumeSkills = resume.skills.map(skill => skill.skillName);
-        const skillMatchCount = jobOfferSkills.filter(skill => resumeSkills.includes(skill)).length;
-        matchingScore += (skillMatchCount / jobOfferSkills.length) * 30;
-
-        // Weight for job positions match
-        const positionMatchCount = jobOffer.posts.filter(post =>
-            resume.experiences.some(exp =>
-                exp.jobTitle === post.title && exp.description === post.content
-            )
-        ).length;
-        matchingScore += (positionMatchCount / jobOffer.posts.length) * 20;
-
-        // Compare job seeker's preferencesRecherche with job offer's title and description
-        jobSeeker.preferencesRecherche.flatMap(preference => {
-            if (jobOffer.titre.includes(preference)) {
-                matchingScore += 2;
+            // Poids pour la correspondance du titre du poste
+            if (fuzzysort.single(resume.profileTitle, post.title)) {
+                matchingScore += maxTitleWeight;
             }
-            if (jobOffer.description.includes(preference)) {
-                matchingScore += 1;
+            if (fuzzysort.single(jobSeeker.jobTitle, post.title)) {
+                matchingScore += maxTitleWeight;
             }
-        });
 
-        // Compare job seeker's preferencesRecherche with job offer's jobType
-        jobSeeker.preferencesRecherche.forEach(preference => {
-            if (jobOffer.posts.jobType === preference) {
-                matchingScore += 2;
+            // Poids pour la correspondance de l'adresse
+            if (fuzzysort.single(jobOffer.employerId.address, resume.address)) {
+                matchingScore += 0.5;
             }
-        });
 
-        // Compare job seeker's preferencesRecherche with job offer's posts' titles
-        jobOffer.posts.forEach(post => {
-            jobSeeker.preferencesRecherche.forEach(preference => {
-                if (post.title.includes(preference)) {
-                    matchingScore += 2;
-                }
+            // Poids pour la correspondance des compétences
+            const postSkills = post.skills;
+            const resumeSkills = resume.skills.map(skill => skill.skillName);
+            const skillMatchCount = postSkills.filter(skill => fuzzysort.single(skill, resumeSkills.join(' '))).length;
+            matchingScore += (skillMatchCount / postSkills.length) * maxSkillsWeight;
+
+            // Poids pour la correspondance des champs d'industrie
+            if (jobOffer.employerId.IndustryField.toLowerCase() === jobSeeker.IndustryField.toLowerCase()) {
+                matchingScore += maxIndustryFieldWeight;
+            }
+
+            // Calculer le score total en pourcentage et l'arrondir
+            matchingScore = (matchingScore / totalMaxScore) * 100;
+            matchingScore = Math.round(matchingScore);
+
+            matchingScores.push({
+                postId: post._id,
+                matchingScore: matchingScore
             });
-        });
 
-        // Compare job seeker's preferencesRecherche with job offer's posts' jobTypes
-        jobOffer.posts.forEach(post => {
-            
-            jobSeeker.preferencesRecherche.forEach(preference => {
-                
-                if (post.jobType === preference) {
-                    matchingScore += 1;
-                    console.log(matchingScore)
-                }
-            });
-        });
+            overallMatchingScore += matchingScore;
+        }
 
-        // Add more comparisons for other fields if needed
+        // Calculer le score de correspondance global
+        overallMatchingScore = (overallMatchingScore / (jobOffer.posts.length * 100)) * 100;
+        overallMatchingScore = Math.round(overallMatchingScore);
 
-        res.json({ matchingScore });
+        // Envoyer la réponse JSON
+        res.json({ overallMatchingScore: overallMatchingScore, matchingScores: matchingScores });
     } catch (error) {
         console.error('Error calculating matching score:', error.message);
-        return res.status(500).json({ error: { code: 'INTERNAL_SERVER_ERROR', message: 'An internal server error occurred' } });
+        return res.status(500).json({ errorCode: 500, errorMessage: 'Internal Server Error' });
     }
 };
-
-
 
   

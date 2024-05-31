@@ -13,13 +13,15 @@ const JobOfferSchema = new mongoose.Schema({
   titre: { type: String, required: true },
   description: { type: String, required: true },
   clotureOffre: { type: Date, required: true },
+  IndustryField: { type:String ,required: true  },
   disponibilite: { type: Boolean },
   dateDeCreation: { type: Date, default: Date.now },
   dateDeMiseAJour: { type: Date, default: Date.now },
-  dateDeSuppression: { type: Date, default: null },
-  jobType: { type: String, enum: ['in-office', 'remote', 'hybrid'], default: 'in-office' },
+ 
+  jobType: { type: String, enum: ['In-office', 'Remote', 'Hybrid'], default: 'In-office' },
   employerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to User model
   posts: [PostSchema],
+  
 });
 
 const JobOffer = mongoose.model('JobOffer', JobOfferSchema);

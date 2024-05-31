@@ -7,19 +7,19 @@ function Features() {
     {
       name: 'Create Your CV',
       description: 'Build a professional CV tailored to your skills and experiences with our easy-to-use CV creator tool.',
-      href: '/create-cv',  // Adjust link based on your routing
+      href: '/login',  // Adjust link based on your routing
       icon: DocumentTextIcon,
     },
     {
       name: 'Start Applying for Jobs',
       description: 'Browse through a wide range of job listings and apply directly through our platform to kickstart your career.',
-      href: '/jobs',  // Adjust link based on your routing
+      href: '/login',  // Adjust link based on your routing
       icon: BriefcaseIcon,
     },
     {
       name: 'Connect with Employers',
       description: 'Network with industry professionals, recruiters, and potential employers to expand your opportunities.',
-      href: '/network',  // Adjust link based on your routing
+      href: '/login',  // Adjust link based on your routing
       icon: UsersIcon,
     },
   ];

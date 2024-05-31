@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
 import HomeNav from './Nav';
-import {Typography} from '@material-tailwind/react'
+import { Typography } from '@material-tailwind/react';
+
 export function FeaturedCompanies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [companies, setCompanies] = useState([]);
@@ -63,7 +64,7 @@ export function FeaturedCompanies() {
           </div>
         </form>
       </div>
-      <ul  className="grid grid-cols-1  gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {filteredCompanies.length > 0 ? (
           filteredCompanies.map((company, index) => (
             <li

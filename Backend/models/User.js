@@ -44,6 +44,7 @@ const jobSeekerSchema = new Schema({
     jobTitle: String,  // Added jobTitle
     address: String,   // Added address
     photo: String,
+    IndustryField: String,
     PhoneNumber: String,
     preferencesRecherche: [String],
     resume: {

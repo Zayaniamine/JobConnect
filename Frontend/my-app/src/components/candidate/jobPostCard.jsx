@@ -8,7 +8,7 @@ function JobPostsCard() {
     const { jobOfferId } = useParams();
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
-    
+    const [overallMatchingScore, setOverallMatchingScore] = useState(0);
     useEffect(() => {
         const fetchJobs = async () => {
             try {
@@ -17,14 +17,16 @@ function JobPostsCard() {
 
                 const postsData = await Promise.all(response.data.map(async post => {
                     const matchingScoreResponse = await axios.post(`http://localhost:4000/JobSeeker/matching-score/${jobOfferId}/${jobSeekerId}`);
+                    const matchingScore = matchingScoreResponse.data.matchingScores.find(score => score.postId === post._id).matchingScore;
                     return {
                         ...post,
                         clotureOffre: new Date(post.clotureOffre).toLocaleDateString(),
                         disponibilite: new Date(post.clotureOffre) >= new Date(),
-                        matchingScore: matchingScoreResponse.data.matchingScore
+                        matchingScore: matchingScore
                     };
                 }));
                 setPosts(postsData);
+                setOverallMatchingScore(response.data.overallMatchingScore);
             } catch (error) {
                 console.error('Failed to fetch job posts:', error);
                 setPosts([]);

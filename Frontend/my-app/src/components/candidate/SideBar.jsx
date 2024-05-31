@@ -48,9 +48,9 @@ const CandidateSidebar = () => {
       <Sidebar.Items className='flex pt-5'>
         <Sidebar.ItemGroup>
           <Sidebar.Item as={Link} to="/JobSeeker/view-job-offers" icon={HiSearchCircle}>View Job Offers</Sidebar.Item>
-          <Sidebar.Item as={Link} to="/JobSeeker/create-cv" icon={HiTemplate}>Create CV</Sidebar.Item>
+          <Sidebar.Item as={Link} to="/JobSeeker/create-cv" icon={HiTemplate}>MyCV</Sidebar.Item>
           <Sidebar.Item as={Link} to="/JobSeeker/job-applications" icon={HiDocumentReport}>My Applications</Sidebar.Item>
-          <Sidebar.Item as={Link} to="/JobSeeker/company-profiles" icon={HiUserCircle}>Company Profiles</Sidebar.Item>
+          <Sidebar.Item as={Link} to="/JobSeeker/company-profiles" icon={HiUserCircle}>Employers</Sidebar.Item>
           <Sidebar.Item as={Link} to="/JobSeeker/settings" icon={HiCog}>Settings</Sidebar.Item>
 
           <hr className='bottom-10' />

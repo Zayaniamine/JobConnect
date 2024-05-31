@@ -10,7 +10,11 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
     const [closingDate, setClosingDate] = useState(new Date());
     const [closingTime, setClosingTime] = useState('11:59');  // Default closing time
     const [alert, setAlert] = useState({ show: false, message: '' });
+    const [IndustryField, setIndustryField] = useState('');
+
     const modalRef = useRef(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const IndustryFields = ["Technology", "Healthcare", "Finance", "Education", "Manufacturing"];
 
     useEffect(() => {
         if (isOpen && modalRef.current) {
@@ -42,7 +46,7 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
     };
 
     const handleAddPosition = () => {
-        setPositions([...positions, { title: '', content: '', skills: [], jobType: 'in-office', tempSkill: '' }]);
+        setPositions([...positions, { title: '', content: '', skills: [], jobType: 'In-office', tempSkill: '' }]);
     };
 
     const handleRemovePosition = (index) => {
@@ -70,6 +74,10 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
         newPositions[index].tempSkill = value;
         setPositions(newPositions);
     };
+    const handleSectorSelect = (selectedSector) => {
+        setIndustryField( selectedSector)
+        setIsDropdownOpen(false);
+      };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -91,6 +99,7 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
             clotureOffre: dateTime.toISOString(),
             disponibilite: true,
              employerId: sessionStorage.getItem('userId'),
+             IndustryField:IndustryField
         };
 
         const url = initialData ? `http://localhost:4000/api/jobs/update-joboffer/${initialData._id}` : 'http://localhost:4000/api/jobs/create-job';
@@ -127,7 +136,26 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
 
                     <Label htmlFor="description" value="Job Description" />
                     <TextInput id="description" type="text" placeholder="Enter job description" required value={description} onChange={(e) => setDescription(e.target.value)} />
-
+                    <div>
+                <label htmlFor="IndustryField" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Industry Field</label>
+                <div className="relative">
+                  <input type="text" value={IndustryField} readOnly className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="text-gray-500">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                  </div>
+                  {isDropdownOpen && (
+                    <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto">
+                      {IndustryFields.map((IndustryField) => (
+                        <li key={IndustryField} className="px-4 py-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleSectorSelect(IndustryField)}>
+                          {IndustryField}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
                     {positions.map((position, index) => (
                         <div key={index}>
                             <Label value={`Position ${index + 1} - Title`} />
@@ -155,9 +183,9 @@ function CreateJob({ isOpen, onClose, onSave, initialData }) {
 
                             <Label value={`Position ${index + 1} - Job Type`} />
                             <select value={position.jobType} onChange={(e) => handlePositionChange(index, 'jobType', e.target.value)} className="form-select mt-1 block w-full">
-                                <option value="in-office">In-office</option>
-                                <option value="remote">Remote</option>
-                                <option value="hybrid">Hybrid</option>
+                                <option value="In-office">In-office</option>
+                                <option value="Remote">Remote</option>
+                                <option value="Hybrid">Hybrid</option>
                             </select>
 
                             <Button className='mt-3 bg-gray-400' onClick={() => handleRemovePosition(index)}>Remove Position</Button>

@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function EditCandidate() {
+
+
+const IndustryFields = ["Technology", "Healthcare", "Finance", "Education", "Manufacturing"];
+
+
   const [jobSeeker, setJobSeeker] = useState({
     prenom: '',
     nom: '',
@@ -17,7 +22,8 @@ function EditCandidate() {
     preferencesRecherche: [],
     resume: null,
     linkedin: '',
-    github: ''
+    github: '',
+    IndustryField: ''
   });
 
   useEffect(() => {
@@ -128,7 +134,21 @@ function EditCandidate() {
                 <label htmlFor="profileDescription" className="block text-sm font-medium leading-6 text-gray-900">jobTitle</label>
                 <input id="jobTitle" name="jobTitle" rows={3} value={jobSeeker.jobTitle} onChange={handleChange} placeholder="jobTitle" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
               </div>
-
+              <div className="sm:col-span-6">
+                <label htmlFor="IndustryField" className="block text-sm font-medium leading-6 text-gray-900">Industry Field</label>
+                <select 
+                  name="IndustryField" 
+                  id="IndustryField" 
+                  value={jobSeeker.IndustryField} 
+                  onChange={handleChange} 
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                >
+                  <option value="">Select Industry</option>
+                  {IndustryFields.map((field) => (
+                    <option key={field} value={field}>{field}</option>
+                  ))}
+                </select>
+              </div>
               
             </div>
           </div>
@@ -136,6 +156,8 @@ function EditCandidate() {
             <button type="button" className="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
             <button type="submit" className="rounded-md bg-[#212e53] py-2 px-4 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#212e55]/90 focus:outline-none focus:ring-2 focus:ring-[#212e55]/50">Save</button>
           </div>
+         
+
         </form>
       </div>
     </div>

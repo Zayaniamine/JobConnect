@@ -14,8 +14,11 @@ function CandidateForm() {
     address: '',
     photo: null,
     github: '',
-    linkedin: ''
+    linkedin: '',
+    IndustryField: '',
   });
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const IndustryFields = ["Technology", "Healthcare", "Finance", "Education", "Manufacturing"];
 
   const navigate = useNavigate();
 
@@ -37,6 +40,13 @@ function CandidateForm() {
       ...prev,
       [name]: value
     }));
+  };
+  const handleSectorSelect = (selectedSector) => {
+    setCandidateInfo(prev => ({
+      ...prev,
+      IndustryField: selectedSector
+    }));
+    setIsDropdownOpen(false);
   };
 
   const handleFileChange = (event) => {
@@ -61,6 +71,7 @@ function CandidateForm() {
     formData.append('photo', candidateInfo.photo);
     formData.append('github', candidateInfo.github);
     formData.append('linkedin', candidateInfo.linkedin);
+    formData.append('IndustryField', candidateInfo.IndustryField);
     formData.append('preferencesRecherche', JSON.stringify(preferencesRecherche));
 
     const userId = sessionStorage.getItem('userId');
@@ -75,7 +86,7 @@ function CandidateForm() {
         }
       });
       console.log('Form submitted:', response.data);
-      navigate('/JobSeeker');
+      navigate('/Create-Resume');
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -110,6 +121,26 @@ function CandidateForm() {
               <input type="text" name="address" id="address" value={candidateInfo.address} onChange={handleChange} placeholder="123 Main St, City, Country" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required />
             </div>
             <div>
+            <div>
+                <label htmlFor="IndustryField" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Industry Field</label>
+                <div className="relative">
+                  <input type="text" value={candidateInfo.IndustryField} readOnly className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="text-gray-500">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                  </div>
+                  {isDropdownOpen && (
+                    <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto">
+                      {IndustryFields.map((IndustryField) => (
+                        <li key={IndustryField} className="px-4 py-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleSectorSelect(IndustryField)}>
+                          {IndustryField}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
               <label htmlFor="preferencesRecherche" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Job Search Preferences</label>
               <div className="flex items-center">
                 <input

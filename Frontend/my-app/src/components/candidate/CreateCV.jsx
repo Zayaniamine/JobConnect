@@ -53,6 +53,7 @@ function ResumeForm() {
         phoneNumber: '',
         address: '',
         postalCode: '',
+        email:'',
         city: '',
         profileTitle: '',
         profileDescription: '',
@@ -96,7 +97,7 @@ function ResumeForm() {
 
         try {
             await axios.put(`http://localhost:4000/jobSeeker/update-resume/${userId}`, { resume });
-            alert('Resume updated successfully!');
+            alert('Resume Updated succefully !');
         } catch (error) {
             console.error('Error updating resume:', error);
             alert('Failed to update resume. Please try again.');
@@ -116,6 +117,7 @@ function ResumeForm() {
         lastName: '',
         phoneNumber: '',
         address: '',
+        email:'',
         postalCode: '',
         city: '',
         profileTitle: '',
@@ -250,7 +252,7 @@ function ResumeForm() {
             <button type="button" 
             onClick={handleUpdate}
             className="mt-4 p-2 ml-5 absolute rounded-md  right-40 bg-[#212e53] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800">
-                Submit Resume
+                Update Resume
             </button>
             <button
                     type="button"

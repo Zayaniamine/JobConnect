@@ -80,7 +80,7 @@ const EmployerSidebar = () => {
               <Sidebar.Item as={Link} to="/Employer/ActiveJobs">Preview Job Offers</Sidebar.Item>
             </Sidebar.Collapse>
             <Sidebar.Item as={Link} to="/employer/Applications" icon={HiClipboardList}>Manage Applications</Sidebar.Item>
-            <Sidebar.Item as={Link} to="/employer/Candidate" icon={HiUserGroup}>Candidate Selection</Sidebar.Item>
+            <Sidebar.Item as={Link} to="/employer/Candidate" icon={HiUserGroup}>JobSeekers</Sidebar.Item>
             <Sidebar.Item as={Link} to="/employer/settings" icon={HiCog}>Settings</Sidebar.Item>
             <hr className='bottom-10' />
             <Sidebar.Item className="absolute bottom-5 ml-14" onClick={handleLogout}  as={Link} to="/" icon={HiLogin}>Log out</Sidebar.Item>
